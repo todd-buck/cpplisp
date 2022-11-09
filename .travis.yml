@@ -1,0 +1,15 @@
+sudo: required
+
+# matrix layout based on:
+# https://github.com/libressl-portable/portable/blob/9e090286b55def5ca2c0cc375c65023a70d8796e/.travis.yml
+
+matrix:
+  include:
+    - {env: IMPL=cpp,                         services: [docker]}
+
+script:
+  # Build, test, perf
+  - ./.travis_test.sh build ${IMPL}
+  - ./.travis_test.sh test ${IMPL}
+  - STEP=stepA REGRESS=1 HARD=1 OPTIONAL=0 ./.travis_test.sh test ${IMPL}
+  - ./.travis_test.sh perf ${IMPL}
