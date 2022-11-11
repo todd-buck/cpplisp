@@ -39,7 +39,7 @@ Value *eval_ast(Value *ast, Env &env) {
         case Value::Type::Symbol: {
             auto search = env.find(ast->as_symbol());
             if (search == env.end()) {
-                cerr << "error, " << ast->as_symbol()->str() << " not found \n";
+                throw new ExceptionValue {ast->as_symbol()->str() + " not found."}
                 return new SymbolValue{"nil"};
             }
             return search->second;
@@ -64,10 +64,14 @@ string PRINT(Value *input) {
 }
 
 string rep(string input, Env &env) {
-    auto ast = READ(input);
-    auto result = EVAL(ast, env);
-    return PRINT(result);
-
+    try {
+        auto ast = READ(input);
+        auto result = EVAL(ast, env);
+        return PRINT(result);
+    } catch (ExceptionValue* exception) {
+        cerr << exception->message() << endl;
+        return "";
+    }
 }
 
 Value *add(size_t argc, Value **args) {

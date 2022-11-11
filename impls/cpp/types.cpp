@@ -22,6 +22,12 @@ FunctionValue *Value::as_function() {
     return static_cast<FunctionValue*>(this);
 }
 
+ExceptionValue *Value::as_exception() {
+    assert(type() == Type::Exception);
+    return static_cast<ExceptionValue*>(this);
+}
+
+
 //builds string out of list (for printing)
 string ListValue::inspect() {
     string out = "(";

@@ -11,6 +11,7 @@ class ListValue;
 class SymbolValue;
 class IntegerValue;
 class FunctionValue;
+class ExceptionValue;
 
 class Value {
 public:
@@ -18,7 +19,8 @@ public:
         List,
         Symbol,
         Integer,
-        Function
+        Function,
+        Exception
     };
 
     virtual string inspect() { assert(0); }
@@ -29,6 +31,7 @@ public:
     SymbolValue *as_symbol();
     IntegerValue *as_int();
     FunctionValue *as_function();
+    ExceptionValue *as_exception();
 };
 
 //stores list in vectors
@@ -112,4 +115,21 @@ public:
 
 private:
     FnPtr m_fn{nullptr};
+};
+
+class ExceptionValue : public Value {
+public:
+    ExceptionValue(string message) : m_message{message} {}
+
+
+    virtual Type type() {return Type::Exception;}
+
+    virtual string inspect() {
+        return "<exception" + m_message + ">";
+    }
+
+    const string &message() {return m_message;}
+
+private:
+    string m_message;
 };
