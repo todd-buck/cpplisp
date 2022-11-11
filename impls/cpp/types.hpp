@@ -7,40 +7,109 @@
 
 using namespace std;
 
+class ListValue;
+class SymbolValue;
+class IntegerValue;
+class FunctionValue;
+
 class Value {
-    public:
-        virtual string inspect() { assert(0); }
+public:
+    enum class Type {
+        List,
+        Symbol,
+        Integer,
+        Function
+    };
+
+    virtual string inspect() { assert(0); }
+
+    virtual Type type() { assert(0); }
+
+    ListValue *as_list();
+    SymbolValue *as_symbol();
+    IntegerValue *as_int();
+    FunctionValue *as_function();
 };
 
 //stores list in vectors
 class ListValue : public Value {
-    public:
-        ListValue() {}
+public:
+    ListValue() {}
 
-        void push(Value *value) {
-            m_list.push_back(value);
-        }
+    void push(Value *value) {
+        m_list.push_back(value);
+    }
 
-        virtual string inspect();
+    virtual Type type() {return Type::List;}
+    virtual string inspect();
 
-    private:
-        vector<Value *> m_list {};
+    auto begin() {return m_list.begin();}
+    auto end() {return m_list.end();}
+
+    bool is_empty() {
+        return m_list.size() == 0;
+    }
+
+    size_t size() {
+        return m_list.size();
+    }
+
+    Value *at(size_t index) {
+        return m_list.at(index);
+    }
+
+private:
+    vector<Value *> m_list{};
 };
 
 //stores symbols as strings
 class SymbolValue : public Value {
-    public:
-        SymbolValue(string_view str) 
-            : m_str { str } {}
+public:
+    SymbolValue(string_view str)
+            : m_str{str} {}
 
-        string str() { return m_str; }
+    string str() { return m_str; }
 
-        //for printing symbol
-        virtual string inspect() {
-            return str();
-        }
-        
-    private:
-        string m_str;
+    virtual Type type() {return Type::Symbol;}
+    //for printing symbol
+    virtual string inspect() {
+        return str();
+    }
+
+private:
+    string m_str;
 };
 
+class IntegerValue : public Value {
+public:
+    IntegerValue(long l) : m_long{l} {}
+
+    long to_long() { return m_long; }
+
+    virtual Type type() {return Type::Integer;}
+
+    virtual string inspect() {
+        return to_string(m_long);
+    }
+
+private:
+    long m_long{0};
+};
+
+using FnPtr = Value *(*)(size_t, Value **);
+
+class FnValue : public Value {
+public:
+    FnValue(FnPtr fn) : m_fn{fn} {}
+
+    FnPtr to_fn() { return m_fn; }
+
+    virtual Type type() {return Type::Function;}
+
+    virtual string inspect() {
+        return "Function";
+    }
+
+private:
+    FnPtr m_fn{nullptr};
+};
