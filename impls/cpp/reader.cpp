@@ -30,7 +30,7 @@ Value *read_form(Reader &reader) {
         case '(':
             return read_list(reader);
         case '-': {
-            if (reader.peek().length() == 1) { return read_atom(reader) }
+            if (reader.peek()->length() == 1) { return read_atom(reader); }
 
             return read_integer(reader);
         }

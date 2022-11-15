@@ -99,22 +99,22 @@ private:
     long m_long{0};
 };
 
-using FnPtr = Value *(*)(size_t, Value **);
+using FunctionPtr = Value *(*)(size_t, Value **);
 
-class FnValue : public Value {
+class FunctionValue : public Value {
 public:
-    FnValue(FnPtr fn) : m_fn{fn} {}
+    FunctionValue(FunctionPtr function) : m_function{function} {}
 
-    FnPtr to_fn() { return m_fn; }
+    FunctionPtr to_function() { return m_function; }
 
-    virtual Type type() {return Type::Function;}
+    virtual Type type() { return Type::Function; }
 
     virtual string inspect() {
         return "Function";
     }
 
 private:
-    FnPtr m_fn{nullptr};
+    FunctionPtr m_function {nullptr};
 };
 
 class ExceptionValue : public Value {

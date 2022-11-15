@@ -19,19 +19,18 @@ Value *eval_ast(Value *ast, Env &env);
 Value *EVAL(Value *ast, Env &env) {
     if (ast->type() != Value::Type::List) {
         return eval_ast(ast, env);
-    } else if (ast->as_list()->is_empty) {
+    } else if (ast->as_list()->is_empty()) {
         return ast;
     } else {
         auto list = eval_ast(ast, env)->as_list();
         auto fn = list->at(0)->as_function()->to_function();
         Value *args[list->size() - 1];
-        for (size_t i = 1; i < list->size(); ++1) {
+        for (size_t i = 1; i < list->size(); ++i) {
             args[i - 1] = list->at(i);
         }
         return fn(list->size() - 1, args);
 
     }
-    return input;
 }
 
 Value *eval_ast(Value *ast, Env &env) {
@@ -39,8 +38,8 @@ Value *eval_ast(Value *ast, Env &env) {
         case Value::Type::Symbol: {
             auto search = env.find(ast->as_symbol());
             if (search == env.end()) {
-                throw new ExceptionValue {ast->as_symbol()->str() + " not found."}
-                return new SymbolValue{"nil"};
+                throw new ExceptionValue {ast->as_symbol()->str() + " not found."};
+                //return new SymbolValue{"nil"};
             }
             return search->second;
         }
@@ -129,6 +128,11 @@ Value *div(size_t argc, Value **args) {
 int main() {
     const auto history_path = "history.txt";
 
+    // Set max length of the history
+    linenoise::SetHistoryMaxLen(10);
+
+    // Load history
+    linenoise::LoadHistory(history_path);
     Env env{};
     env[new SymbolValue("+")] = new FunctionValue{add};
     env[new SymbolValue("-")] = new FunctionValue{sub};
@@ -137,13 +141,6 @@ int main() {
 
 
     string input;
-
-    // Set max length of the history
-    linenoise::SetHistoryMaxLen(10);
-
-    // Load history
-    linenoise::LoadHistory(history_path);
-
     while (true) {
 
         auto quit = linenoise::Readline("user> ", input);
