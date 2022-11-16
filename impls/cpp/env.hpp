@@ -36,6 +36,12 @@ public:
     // GET: takes a symbol key and uses the find() method to locate the environment
     // with the key, then returns the mathing value. If no key is found
     // up the outer chain, then throws a "not found" error.
+    Value *get(const SymbolValue *key) const {
+        auto env = find(key);
+        if (!env)
+            throw new ExceptionValue { key->str() + " not found" };
+        return env->m_data[key];
+    }
 
 private:
     Env *m_outer { nullptr };
