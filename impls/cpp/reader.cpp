@@ -22,15 +22,17 @@ Value *read_str(string &input) {
 }
 
 Value *read_form(Reader &reader) {
-    auto token = reader.peek();
+    auto maybe_token = reader.peek();
 
-    if (!token) return nullptr;
+    if (!maybe_token) return nullptr;
 
-    switch (token.value()[0]) {
+    auto token = maybe_token.value();
+
+    switch (token[0]) {
         case '(':
             return read_list(reader);
         case '-': {
-            if (reader.peek()->length() == 1) { return read_atom(reader); }
+            if (token.length() == 1 || !isdigit(token[1])) { return read_atom(reader); }
 
             return read_integer(reader);
         }

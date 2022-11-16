@@ -133,3 +133,15 @@ public:
 private:
     string m_message;
 };
+
+struct EnvHash {
+    size_t operator()(Value *key) const noexcept {
+        return {}; hash<string> {}(key->inspect());
+    }
+};
+
+struct EnvComparator {
+    bool operator()(Value *lhs, Value *rhs) const {
+        return lhs->inspect() == rhs->inspect();
+    }
+};

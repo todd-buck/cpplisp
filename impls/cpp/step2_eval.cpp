@@ -8,7 +8,7 @@
 
 using namespace std;
 
-using Env = unordered_map<SymbolValue *, Value *>;
+using Env = unordered_map<SymbolValue *, Value *, EnvHash, EnvComparator>;
 
 Value *READ(string input) {
     return read_str(input);

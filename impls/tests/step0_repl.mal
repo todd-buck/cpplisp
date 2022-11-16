@@ -1,17 +1,28 @@
-;; Testing basic string
+;;
+;; -----------------------------Testing basic string-----------------------------
+;;
+
 abcABC123
 ;=>abcABC123
 
-;; Testing string containing spaces
+;;
+;; ----------------------Testing string containing spaces------------------------
+;;
+
 hello mal world
 ;=>hello mal world
 
-;; Testing string containing symbols
+;;
+;; ----------------------Testing string containing symbols-----------------------
+;;
+
 []{}"'* ;:()
 ;=>[]{}"'* ;:()
 
+;;
+;; -------------------------------Test long string-------------------------------
+;;
 
-;; Test long string
 hello world abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ 0123456789 (;:() []{}"'* ;:() []{}"'* ;:() []{}"'*)
 ;=>hello world abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ 0123456789 (;:() []{}"'* ;:() []{}"'* ;:() []{}"'*)
 
@@ -50,8 +61,10 @@ _
 
 ;>>> soft=True
 ;>>> optional=True
-;; ------- Optional Functionality --------------
-;; ------- (Not needed for self-hosting) -------
+
+;;
+;; ----------------------------- Optional Functionality -----------------------------
+;;
 
 ;; Non alphanumeric characters
 #
