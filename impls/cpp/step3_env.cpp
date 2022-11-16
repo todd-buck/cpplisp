@@ -4,10 +4,11 @@
 #include "../../linenoise.hpp"
 #include "reader.hpp"
 #include "printer.hpp"
-
+#include "env.hpp"
 
 using namespace std;
 
+// took out environment definition to include "env.hpp"
 using Env = unordered_map<SymbolValue *, Value *, EnvHash, EnvComparator>;
 
 Value *READ(string input) {
