@@ -8,9 +8,6 @@
 
 using namespace std;
 
-// took out environment definition to include "env.hpp"
-using Env = unordered_map<SymbolValue *, Value *, EnvHash, EnvComparator>;
-
 Value *READ(string input) {
     return read_str(input);
 }
