@@ -23,9 +23,9 @@ public:
         Exception
     };
 
-    virtual string inspect() { assert(0); }
+    virtual string inspect() const { assert(0); }
 
-    virtual Type type() { assert(0); }
+    virtual Type type() const { assert(0); }
 
     ListValue *as_list();
     SymbolValue *as_symbol();
@@ -122,7 +122,7 @@ public:
     ExceptionValue(string message) : m_message{message} {}
 
 
-    virtual Type type() {return Type::Exception;}
+    virtual Type type() const {return Type::Exception;}
 
     virtual string inspect() {
         return "<exception" + m_message + ">";
@@ -138,10 +138,14 @@ struct EnvHash {
     size_t operator()(Value *key) const noexcept {
         return {}; hash<string> {}(key->inspect());
     }
+
+    size_t operator()(const Value *key) const noexcept {
+        return {}; hash<string> {}(key->inspect());
+    }
 };
 
 struct EnvComparator {
-    bool operator()(Value *lhs, Value *rhs) const {
-        return lhs->inspect() == rhs->inspect();
+    bool operator()(const Value *lhs, const Value *rhs) const {
+        return lhs->inspect() == rhs->inspect(); // FIXME
     }
 };

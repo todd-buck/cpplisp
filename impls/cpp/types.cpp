@@ -29,7 +29,7 @@ ExceptionValue *Value::as_exception() {
 
 
 //builds string out of list (for printing)
-string ListValue::inspect() {
+string ListValue::inspect() const {
     string out = "(";
 
     for (auto *value: m_list) {
