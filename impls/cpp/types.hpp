@@ -23,9 +23,9 @@ public:
         Exception
     };
 
-    virtual string inspect() { assert(0); }
-
-    virtual Type type() { assert(0); }
+    virtual Type type() const = 0;
+    virtual string inspect() const = 0;
+    virtual bool is_symbol() const {return false;}
 
     ListValue *as_list();
     SymbolValue *as_symbol();
@@ -43,8 +43,8 @@ public:
         m_list.push_back(value);
     }
 
-    virtual Type type() {return Type::List;}
-    virtual string inspect();
+    virtual Type type() const override {return Type::List;}
+    virtual string inspect() const override;
 
     auto begin() {return m_list.begin();}
     auto end() {return m_list.end();}
@@ -71,13 +71,19 @@ public:
     SymbolValue(string_view str)
             : m_str{str} {}
 
-    string str() { return m_str; }
+    string str() const { return m_str; }
 
-    virtual Type type() {return Type::Symbol;}
+    bool matches(const char *str) const {
+        return m_str == str;
+    }
+
+    virtual Type type() const override {return Type::Symbol;}
     //for printing symbol
-    virtual string inspect() {
+    virtual string inspect() const override {
         return str();
     }
+
+    virtual bool is_symbol() const override {return true;}
 
 private:
     string m_str;
@@ -89,9 +95,9 @@ public:
 
     long to_long() { return m_long; }
 
-    virtual Type type() {return Type::Integer;}
+    virtual Type type() const override {return Type::Integer;}
 
-    virtual string inspect() {
+    virtual string inspect() const override {
         return to_string(m_long);
     }
 
@@ -107,9 +113,9 @@ public:
 
     FunctionPtr to_function() { return m_function; }
 
-    virtual Type type() { return Type::Function; }
+    virtual Type type() const override { return Type::Function; }
 
-    virtual string inspect() {
+    virtual string inspect() const override {
         return "Function";
     }
 
@@ -122,9 +128,9 @@ public:
     ExceptionValue(string message) : m_message{message} {}
 
 
-    virtual Type type() {return Type::Exception;}
+    virtual Type type() const override {return Type::Exception;}
 
-    virtual string inspect() {
+    virtual string inspect() const override {
         return "<exception" + m_message + ">";
     }
 
@@ -138,10 +144,14 @@ struct EnvHash {
     size_t operator()(Value *key) const noexcept {
         return {}; hash<string> {}(key->inspect());
     }
+
+    size_t operator()(const Value *key) const noexcept {
+        return {}; hash<string> {}(key->inspect());
+    }
 };
 
 struct EnvComparator {
-    bool operator()(Value *lhs, Value *rhs) const {
-        return lhs->inspect() == rhs->inspect();
+    bool operator()(const Value *lhs, const Value *rhs) const {
+        return lhs->inspect() == rhs->inspect(); // FIXME
     }
 };
