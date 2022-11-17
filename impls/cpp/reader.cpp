@@ -2,11 +2,11 @@
 
 using namespace std;
 
-vector<string_view> tokenize(string &input) {
-    Tokenizer tokenizer { input };
-    vector<string_view> vector;
+vector <string_view> tokenize(string &input) {
+    Tokenizer tokenizer{input};
+    vector <string_view> vector;
 
-    while(auto token = tokenizer.next()) {
+    while (auto token = tokenizer.next()) {
         vector.push_back(*token);
     }
 
@@ -14,34 +14,73 @@ vector<string_view> tokenize(string &input) {
 }
 
 Value *read_str(string &input) {
-    auto tokens  = tokenize(input);
+    auto tokens = tokenize(input);
 
-    Reader reader { tokens };
+    Reader reader{tokens};
 
     return read_form(reader);
 }
 
-Value* read_form(Reader &reader) {
-    auto token = reader.peek();
+Value *read_form(Reader &reader) {
+    auto maybe_token = reader.peek();
 
-    if(!token) return nullptr;
+    if (!maybe_token) return nullptr;
 
-    switch(token.value()[0]) {
-        case '(': 
+    auto token = maybe_token.value();
+
+    switch (token[0]) {
+        case '(':
             return read_list(reader);
+        case '-': {
+            if (token.length() == 1 || !isdigit(token[1])) { return read_atom(reader); }
+
+            return read_integer(reader);
+        }
+        case '0':
+        case '1':
+        case '2':
+        case '3':
+        case '4':
+        case '5':
+        case '6':
+        case '7':
+        case '8':
+        case '9':
+            return read_integer(reader);
         default:
             return read_atom(reader);
     }
+}
+
+Value *read_integer(Reader &reader) {
+    auto token = reader.next();
+    long number = 0;
+    bool negative = false;
+    for (char c: *token) {
+        if (c == '-') {
+            negative = true;
+        } else {
+            number *= 10;
+            int digit = c - 48;
+            number += digit;
+        }
+    }
+
+    if (negative) {
+        number *= -1;
+    }
+
+    return new IntegerValue{number};
 }
 
 Value *read_list(Reader &reader) {
     //consume '('
     reader.next();
 
-    auto *list = new ListValue {};
+    auto *list = new ListValue{};
 
-    while(auto token = reader.peek()) {
-        if(*token == ")") {
+    while (auto token = reader.peek()) {
+        if (*token == ")") {
             reader.next();
             break;
         }
@@ -52,5 +91,5 @@ Value *read_list(Reader &reader) {
 }
 
 Value *read_atom(Reader &reader) {
-    return new SymbolValue { *reader.next() };
+    return new SymbolValue{*reader.next()};
 }

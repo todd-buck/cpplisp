@@ -212,6 +212,8 @@ Value *read_str(string &input);
 
 Value *read_form(Reader &reader);
 
+Value *read_integer(Reader &reader);
+
 Value *read_list(Reader &reader);
 
 Value *read_atom(Reader &reader);
