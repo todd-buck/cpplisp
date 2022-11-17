@@ -20,6 +20,16 @@ Value *EVAL(Value *ast, Env &env) {
     } else if (ast->as_list()->is_empty()) {
         return ast;
     } else {
+        auto list = ast->as_list();
+        auto first= list->at(0); 
+        // symbol "def!": call the set method of the current environment (second parameter of EVAL called env) using the unevaluated first parameter (second list element) as the symbol key and the evaluated second parameter as the value.
+        
+        // symbol "let*": create a new environment using the current environment as the outer value and then use the first parameter as a list of new bindings in the "let*" environment. Take the second element of the binding list, call EVAL using the new "let*" environment as the evaluation environment, then call set on the "let*" environment using the first binding list element as the key and the evaluated second element as the value. This is repeated for each odd/even pair in the binding list. Note in particular, the bindings earlier in the list can be referred to by later bindings. Finally, the second parameter (third element) of the original let* form is evaluated using the new "let*" environment and the result is returned as the result of the let* (the new let environment is discarded upon completion).
+        
+        // otherwise: call eval_ast on the list and apply the first element to the rest as before.
+                
+
+        // old code
         auto list = eval_ast(ast, env)->as_list();
         auto fn = list->at(0)->as_function()->to_function();
         Value *args[list->size() - 1];
@@ -31,15 +41,11 @@ Value *EVAL(Value *ast, Env &env) {
     }
 }
 
+// modify eval_ast to call the get() method on the "env" parameter
 Value *eval_ast(Value *ast, Env &env) {
     switch (ast->type()) {
         case Value::Type::Symbol: {
-            auto search = env.find(ast->as_symbol());
-            if (search == env.end()) {
-                throw new ExceptionValue {ast->as_symbol()->str() + " not found."};
-                //return new SymbolValue{"nil"};
-            }
-            return search->second;
+            return env.get(ast->as_symbol());
         }
         case Value::Type::List: {
             auto result = new ListValue{};
@@ -131,11 +137,12 @@ int main() {
 
     // Load history
     linenoise::LoadHistory(history_path);
-    Env env{};
-    env[new SymbolValue("+")] = new FunctionValue{add};
-    env[new SymbolValue("-")] = new FunctionValue{sub};
-    env[new SymbolValue("*")] = new FunctionValue{mul};
-    env[new SymbolValue("/")] = new FunctionValue{div};
+
+    auto env = new Env { nullptr }; // top level Env
+    env->set(new SymbolValue("+"), new FunctionValue{add}); 
+    env->set(new SymbolValue("-"), new FunctionValue{sub});
+    env->set(new SymbolValue("*"), new FunctionValue{mul});
+    env->set(new SymbolValue("/"), new FunctionValue{div});
 
 
     string input;
@@ -145,7 +152,7 @@ int main() {
 
         if (quit) break;
 
-        cout << rep(input, env) << endl;
+        cout << rep(input, *env) << endl;
 
         linenoise::AddHistory(input.c_str());
     }
