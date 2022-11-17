@@ -27,10 +27,19 @@ Value *EVAL(Value *ast, Env &env) {
             auto key = list->at(1)->as_symbol();
             auto val = eval_ast(list->at(2), env);
             env.set(key, val);
+            return val;
         }
         else if (first->is_symbol() && first->as_symbol()->matches("let*")) {
             // symbol "let*": create a new environment using the current environment as the outer value and then use the first parameter as a list of new bindings in the "let*" environment. Take the second element of the binding list, call EVAL using the new "let*" environment as the evaluation environment, then call set on the "let*" environment using the first binding list element as the key and the evaluated second element as the value. This is repeated for each odd/even pair in the binding list. Note in particular, the bindings earlier in the list can be referred to by later bindings. Finally, the second parameter (third element) of the original let* form is evaluated using the new "let*" environment and the result is returned as the result of the let* (the new let environment is discarded upon completion).
-            
+            auto new_env = new Env { &env };
+            auto bindings = list->at(1)->as_list();
+            for (size_t i = 0; i < bindings->size(); i+= 2) {
+                auto key = bindings->at(i)->as_symbol();
+                assert(i+1 < bindings->size()); // CORRECTION FROM VIDEO AROUND 26:37
+                auto val = EVAL(bindings->at(i+1), *new_env);
+                new_env->set(key, val);
+            }
+            return EVAL(list->at(2), *new_env);
         }
         else {
             // otherwise: call eval_ast on the list and apply the first element to the rest as before.
