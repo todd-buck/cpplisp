@@ -12,7 +12,7 @@ SymbolValue *Value::as_symbol() {
     return static_cast<SymbolValue*>(this);
 }
 
-IntegerValue *Value::as_int() {
+IntegerValue *Value::as_integer() {
     assert(type() == Type::Integer);
     return static_cast<IntegerValue*>(this);
 }
@@ -25,6 +25,21 @@ FunctionValue *Value::as_function() {
 ExceptionValue *Value::as_exception() {
     assert(type() == Type::Exception);
     return static_cast<ExceptionValue*>(this);
+}
+
+TrueValue *Value::as_true() {
+    assert(type() == Type::True);
+    return static_cast<TrueValue*>(this);
+}
+
+FalseValue *Value::as_false() {
+    assert(type() == Type::False);
+    return static_cast<FalseValue*>(this);
+}
+
+NilValue *Value::as_nil() {
+    assert(type() == Type::Nil);
+    return static_cast<NilValue*>(this);
 }
 
 
@@ -45,4 +60,21 @@ string ListValue::inspect() const {
 
 
     return out;
+}
+
+bool ListValue::operator==(const Value *other) const {
+    if(type() != other->type()) {
+        return false;
+    }
+    auto other_list = const_cast<Value *>(other)->as_list();
+
+    if(size() != other_list->size()) {
+        return false;
+    }
+
+    for(size_t i = 0; i < size(); ++i) {
+        if(!(*at(i) == other_list->at(i))) return false;
+    }
+
+    return true;
 }

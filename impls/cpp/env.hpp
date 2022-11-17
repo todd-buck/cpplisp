@@ -14,6 +14,17 @@ public:
     Env(Env *outer)
         : m_outer(outer) { }
 
+    Env(Env *outer, ListValue *binds, ListValue *exprs)
+        : m_outer(outer) { 
+            assert(binds->size() == exprs->size());
+            for(size_t i = 0; i < binds->size(); i++) {
+                auto key = binds->at(i)->as_symbol();
+                auto val = exprs->at(i);
+                set(key, val);
+            }
+
+        }
+
     // defining three methods for the env object
 
     // SET: takes a symbol key and a mal value and adds to the data structure

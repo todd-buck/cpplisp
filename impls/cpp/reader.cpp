@@ -48,6 +48,16 @@ Value *read_form(Reader &reader) {
         case '9':
             return read_integer(reader);
         default:
+        if(token == "true") {
+            reader.next();
+            return TrueValue::the();
+        } else if(token == "false") {
+            reader.next();
+            return FalseValue::the();
+        } else if(token == "nil") {
+            reader.next();
+            return NilValue::the();
+        }
             return read_atom(reader);
     }
 }

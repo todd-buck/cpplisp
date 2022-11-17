@@ -1,7 +1,9 @@
 ;; -----------------------------------------------------
 
+;;
+;; ----------------------Testing list functions----------------------
+;;
 
-;; Testing list functions
 (list)
 ;=>()
 (list? (list))
@@ -24,7 +26,10 @@
 ;=>89
 
 
-;; Testing if form
+;;
+;; ------------------------Testing if form-------------------------
+;;
+
 (if true 7 8)
 ;=>7
 (if false 7 8)
@@ -47,7 +52,10 @@
 ;=>false
 
 
-;; Testing 1-way if form
+;;
+;; ----------------------Testing 1-way if form----------------------
+;;
+
 (if false (+ 1 7))
 ;=>nil
 (if nil 8)
@@ -58,7 +66,10 @@
 ;=>8
 
 
-;; Testing basic conditionals
+;;
+;; --------------------Testing basic conditionals--------------------
+;;
+
 (= 2 1)
 ;=>false
 (= 1 1)
@@ -103,7 +114,10 @@
 ;=>true
 
 
-;; Testing equality
+;;
+;; ------------------------Testing equality------------------------
+;;
+
 (= 1 1)
 ;=>true
 (= 0 0)
@@ -133,7 +147,10 @@
 ;=>false
 
 
-;; Testing builtin and user defined functions
+;;
+;; ----------Testing builtin and user defined functions------------
+;;
+
 (+ 1 2)
 ;=>3
 ( (fn* (a b) (+ b a)) 3 4)
@@ -145,7 +162,10 @@
 ;=>8
 
 
-;; Testing closures
+;;
+;; ------------------------Testing closures------------------------
+;;
+
 ( ( (fn* (a) (fn* (b) (+ a b))) 5) 7)
 ;=>12
 
@@ -159,7 +179,11 @@
 (plus7 8)
 ;=>15
 
-;; Testing do form
+
+;;
+;; ------------------------Testing do form-------------------------
+;;
+
 (do (prn 101))
 ;/101
 ;=>nil
@@ -176,12 +200,18 @@
 a
 ;=>6
 
-;; Testing special form case-sensitivity
+;;
+;; -------------Testing special form case-sensitivity---------------
+;;
+
 (def! DO (fn* (a) 7))
 (DO 3)
 ;=>7
 
-;; Testing recursive sumdown function
+;;
+;; ---------------Testing recursive sumdown function----------------
+;;
+
 (def! sumdown (fn* (N) (if (> N 0) (+ N (sumdown  (- N 1))) 0)))
 (sumdown 1)
 ;=>1
@@ -191,7 +221,10 @@ a
 ;=>21
 
 
-;; Testing recursive fibonacci function
+;;
+;; ---------------Testing recursive fibonacci function--------------
+;;
+
 (def! fib (fn* (N) (if (= N 0) 1 (if (= N 1) 1 (+ (fib (- N 1)) (fib (- N 2)))))))
 (fib 1)
 ;=>1
@@ -201,7 +234,10 @@ a
 ;=>5
 
 
-;; Testing recursive function in environment.
+;;
+;; -----------Testing recursive function in environment.-------------
+;;
+
 (let* (cst (fn* (n) (if (= n 0) nil (cst (- n 1))))) (cst 1))
 ;=>nil
 (let* (f (fn* (n) (if (= n 0) 0 (g (- n 1)))) g (fn* (n) (f n))) (f 2))
@@ -209,15 +245,18 @@ a
 
 
 ;>>> deferrable=True
-;;
-;; -------- Deferrable Functionality --------
+;; ------------------------------------------------------------------
+;; -------------------- Deferrable Functionality --------------------
+;; ------------------------------------------------------------------
 
-;; Testing if on strings
+;;
+;; ----------------------Testing if on strings-----------------------
+;;
 
 (if "" 7 8)
 ;=>7
 
-;; Testing string equality
+;; ----------------------Testing string equality---------------------
 
 (= "" "")
 ;=>true
@@ -236,27 +275,32 @@ a
 (= "" (list))
 ;=>false
 
-;; Testing variable length arguments
+;;;;
+;;;; ----------------Testing variable length arguments----------------
+;;;;
 
-( (fn* (& more) (count more)) 1 2 3)
-;=>3
-( (fn* (& more) (list? more)) 1 2 3)
-;=>true
-( (fn* (& more) (count more)) 1)
-;=>1
-( (fn* (& more) (count more)) )
-;=>0
-( (fn* (& more) (list? more)) )
-;=>true
-( (fn* (a & more) (count more)) 1 2 3)
-;=>2
-( (fn* (a & more) (count more)) 1)
-;=>0
-( (fn* (a & more) (list? more)) 1)
-;=>true
+;;( (fn* (& more) (count more)) 1 2 3)
+;;;=>3
+;;( (fn* (& more) (list? more)) 1 2 3)
+;;;=>true
+;;( (fn* (& more) (count more)) 1)
+;;;=>1
+;;( (fn* (& more) (count more)) )
+;;;=>0
+;;( (fn* (& more) (list? more)) )
+;;;=>true
+;;( (fn* (a & more) (count more)) 1 2 3)
+;;;=>2
+;;( (fn* (a & more) (count more)) 1)
+;;;=>0
+;;( (fn* (a & more) (list? more)) 1)
+;;;=>true
 
 
-;; Testing language defined not function
+;;
+;; --------------Testing language defined not function---------------
+;;
+
 (not false)
 ;=>true
 (not nil)
@@ -269,9 +313,11 @@ a
 ;=>false
 
 
-;; -----------------------------------------------------
+;; ------------------------------------------------------------------
 
-;; Testing string quoting
+;;
+;; ----------------------Testing string quoting----------------------
+;;
 
 ""
 ;=>""
@@ -294,7 +340,10 @@ a
 "\\n"
 ;=>"\\n"
 
-;; Testing pr-str
+
+;;
+;; ---------------------------Testing pr-str--------------------------
+;;
 
 (pr-str)
 ;=>""
@@ -323,7 +372,10 @@ a
 (pr-str (list))
 ;=>"()"
 
-;; Testing str
+
+;;
+;; ---------------------------Testing str----------------------------
+;;
 
 (str)
 ;=>""
@@ -355,40 +407,47 @@ a
 (str (list))
 ;=>"()"
 
-;; Testing prn
-(prn)
-;/
-;=>nil
 
-(prn "")
-;/""
-;=>nil
+;;;;
+;;;; ----------------------------Testing prn---------------------------
+;;;;
+;;
+;;(prn)
+;;;/
+;;;=>nil
+;;
+;;(prn "")
+;;;/""
+;;;=>nil
+;;
+;;(prn "abc")
+;;;/"abc"
+;;;=>nil
+;;
+;;(prn "abc  def" "ghi jkl")
+;;;/"abc  def" "ghi jkl"
+;;
+;;(prn "\"")
+;;;/"\\""
+;;;=>nil
+;;
+;;(prn "abc\ndef\nghi")
+;;;/"abc\\ndef\\nghi"
+;;;=>nil
+;;
+;;(prn "abc\\def\\ghi")
+;;;/"abc\\\\def\\\\ghi"
+;;nil
+;;
+;;(prn (list 1 2 "abc" "\"") "def")
+;;;/\(1 2 "abc" "\\""\) "def"
+;;;=>nil
+;;
 
-(prn "abc")
-;/"abc"
-;=>nil
+;;
+;; -------------------------Testing println--------------------------
+;;
 
-(prn "abc  def" "ghi jkl")
-;/"abc  def" "ghi jkl"
-
-(prn "\"")
-;/"\\""
-;=>nil
-
-(prn "abc\ndef\nghi")
-;/"abc\\ndef\\nghi"
-;=>nil
-
-(prn "abc\\def\\ghi")
-;/"abc\\\\def\\\\ghi"
-nil
-
-(prn (list 1 2 "abc" "\"") "def")
-;/\(1 2 "abc" "\\""\) "def"
-;=>nil
-
-
-;; Testing println
 (println)
 ;/
 ;=>nil
@@ -423,7 +482,10 @@ nil
 ;=>nil
 
 
-;; Testing keywords
+;;
+;; -------------------------Testing keywords-------------------------
+;;
+
 (= :abc :abc)
 ;=>true
 (= :abc :def)
@@ -431,66 +493,4 @@ nil
 (= :abc ":abc")
 ;=>false
 (= (list :abc) (list :abc))
-;=>true
-
-;; Testing vector truthiness
-(if [] 7 8)
-;=>7
-
-;; Testing vector printing
-(pr-str [1 2 "abc" "\""] "def")
-;=>"[1 2 \"abc\" \"\\\"\"] \"def\""
-
-(pr-str [])
-;=>"[]"
-
-(str [1 2 "abc" "\""] "def")
-;=>"[1 2 abc \"]def"
-
-(str [])
-;=>"[]"
-
-
-;; Testing vector functions
-(count [1 2 3])
-;=>3
-(empty? [1 2 3])
-;=>false
-(empty? [])
-;=>true
-(list? [4 5 6])
-;=>false
-
-;; Testing vector equality
-(= [] (list))
-;=>true
-(= [7 8] [7 8])
-;=>true
-(= [:abc] [:abc])
-;=>true
-(= (list 1 2) [1 2])
-;=>true
-(= (list 1) [])
-;=>false
-(= [] [1])
-;=>false
-(= 0 [])
-;=>false
-(= [] 0)
-;=>false
-(= [] "")
-;=>false
-(= "" [])
-;=>false
-
-;; Testing vector parameter lists
-( (fn* [] 4) )
-;=>4
-( (fn* [f x] (f x)) (fn* [a] (+ 1 a)) 7)
-;=>8
-
-;; Nested vector/list equality
-(= [(list)] (list []))
-;=>true
-(= [1 2 (list 3 4 [5 6])] (list 1 2 [3 4 (list 5 6)]))
 ;=>true
