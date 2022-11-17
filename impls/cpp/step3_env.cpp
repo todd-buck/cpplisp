@@ -25,7 +25,7 @@ Value *EVAL(Value *ast, Env &env) {
         if (first->is_symbol() && first->as_symbol()->matches("def!")) {
             // symbol "def!": call the set method of the current environment (second parameter of EVAL called env) using the unevaluated first parameter (second list element) as the symbol key and the evaluated second parameter as the value.
             auto key = list->at(1)->as_symbol();
-            auto val = eval_ast(list->at(2), env);
+            auto val = EVAL(list->at(2), env);
             env.set(key, val);
             return val;
         }
