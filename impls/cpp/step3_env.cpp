@@ -22,23 +22,27 @@ Value *EVAL(Value *ast, Env &env) {
     } else {
         auto list = ast->as_list();
         auto first= list->at(0); 
-
-        if ()
-        // symbol "def!": call the set method of the current environment (second parameter of EVAL called env) using the unevaluated first parameter (second list element) as the symbol key and the evaluated second parameter as the value.
-        
-        // symbol "let*": create a new environment using the current environment as the outer value and then use the first parameter as a list of new bindings in the "let*" environment. Take the second element of the binding list, call EVAL using the new "let*" environment as the evaluation environment, then call set on the "let*" environment using the first binding list element as the key and the evaluated second element as the value. This is repeated for each odd/even pair in the binding list. Note in particular, the bindings earlier in the list can be referred to by later bindings. Finally, the second parameter (third element) of the original let* form is evaluated using the new "let*" environment and the result is returned as the result of the let* (the new let environment is discarded upon completion).
-        
-        // otherwise: call eval_ast on the list and apply the first element to the rest as before.
-                
-
-        // old code
-        auto list = eval_ast(ast, env)->as_list();
-        auto fn = list->at(0)->as_function()->to_function();
-        Value *args[list->size() - 1];
-        for (size_t i = 1; i < list->size(); ++i) {
-            args[i - 1] = list->at(i);
+        if (first->is_symbol() && first->as_symbol()->matches("def!")) {
+            // symbol "def!": call the set method of the current environment (second parameter of EVAL called env) using the unevaluated first parameter (second list element) as the symbol key and the evaluated second parameter as the value.
+            auto key = list->at(1)->as_symbol();
+            auto val = eval_ast(list->at(2), env);
+            env.set(key, val);
         }
-        return fn(list->size() - 1, args);
+        else if (first->is_symbol() && first->as_symbol()->matches("let*")) {
+            // symbol "let*": create a new environment using the current environment as the outer value and then use the first parameter as a list of new bindings in the "let*" environment. Take the second element of the binding list, call EVAL using the new "let*" environment as the evaluation environment, then call set on the "let*" environment using the first binding list element as the key and the evaluated second element as the value. This is repeated for each odd/even pair in the binding list. Note in particular, the bindings earlier in the list can be referred to by later bindings. Finally, the second parameter (third element) of the original let* form is evaluated using the new "let*" environment and the result is returned as the result of the let* (the new let environment is discarded upon completion).
+            
+        }
+        else {
+            // otherwise: call eval_ast on the list and apply the first element to the rest as before.
+            // old code
+            auto list = eval_ast(ast, env)->as_list();
+            auto fn = list->at(0)->as_function()->to_function();
+            Value *args[list->size() - 1];
+            for (size_t i = 1; i < list->size(); ++i) {
+                args[i - 1] = list->at(i);
+            }
+            return fn(list->size() - 1, args);
+        }
 
     }
 }

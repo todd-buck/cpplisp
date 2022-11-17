@@ -23,7 +23,7 @@ public:
         Exception
     };
 
-    virtual Type type() const  = 0;
+    virtual Type type() const = 0;
     virtual string inspect() const = 0;
     virtual bool is_symbol() const {return false;}
 
