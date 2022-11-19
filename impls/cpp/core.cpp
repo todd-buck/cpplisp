@@ -12,7 +12,6 @@ unordered_map<string, Function> build_namespace() {
     ns["-"] = subtract;
     ns["*"] = multiply;
     ns["/"] = divide;
-    ns["prn"] = prn;
     ns["list"] = list;
     ns["list?"] = list_q;
     ns["empty?"] = empty_q;
@@ -22,6 +21,12 @@ unordered_map<string, Function> build_namespace() {
     ns["<="] = lte;
     ns[">"] = gt;
     ns[">="] = gte;
+
+    ns["prn"] = prn;
+    ns["pr-str"] = pr_str_function;
+    ns["println"] = println;
+    ns["str"] = str;
+    ns["not"] = not_function;
 
     return ns;
 }
@@ -79,8 +84,17 @@ Value *divide(size_t argc, Value **args) {
 }
 
 Value *prn(size_t argc, Value **args) {
-    assert(argc >= 1);
-    cout << print_string(args[0]) << endl;
+    if(argc == 0) {
+        cout << "\n";
+        return NilValue::the();
+    }
+
+    for (size_t i = 0; i < argc; ++i) {
+        cout << print_string(args[i], true);
+        if (i < argc - 1)
+            cout << ' ';
+    }
+    cout << "\n";
     return NilValue::the();
 }
 
@@ -123,7 +137,6 @@ Value *eq(size_t argc, Value **args) {
     if(*a == b) 
         return TrueValue::the();
     return FalseValue::the();
-
 }
 
 Value *lt(size_t argc, Value **args) {
@@ -176,4 +189,48 @@ Value *gte(size_t argc, Value **args) {
     } else {
         return FalseValue::the();
     }
+}
+
+Value *pr_str_function(size_t argc, Value **args) {
+    if (argc == 0)
+        return new StringValue { "" };
+    string str = "";
+    for (size_t i = 0; i < argc; ++i) {
+        str += print_string(args[i], true);
+        if (i < argc - 1)
+            str += ' ';
+    }
+    return new StringValue { str };
+}
+
+Value *println(size_t argc, Value **args) {
+    if (argc == 0) {
+        cout << "\n";
+        return NilValue::the();
+    }
+    string str = "";
+    for (size_t i = 0; i < argc; ++i) {
+        str += print_string(args[i], false);
+        if (i < argc - 1)
+            str += ' ';
+    }
+    cout << str << "\n";
+    return NilValue::the();
+}
+
+Value *str(size_t argc, Value **args) {
+    if (argc == 0)
+        return new StringValue { "" };
+    string str = "";
+    for (size_t i = 0; i < argc; ++i) {
+        str += print_string(args[i], false);
+    }
+    return new StringValue { str };
+}
+
+Value *not_function(size_t argc, Value **args) {
+    assert(argc >= 1);
+    if (args[0]->is_truthy())
+        return FalseValue::the();
+    return TrueValue::the();
 }

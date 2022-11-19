@@ -245,6 +245,7 @@ a
 
 
 ;>>> deferrable=True
+;;
 ;; ------------------------------------------------------------------
 ;; -------------------- Deferrable Functionality --------------------
 ;; ------------------------------------------------------------------
@@ -256,7 +257,9 @@ a
 (if "" 7 8)
 ;=>7
 
+;;
 ;; ----------------------Testing string equality---------------------
+;;
 
 (= "" "")
 ;=>true
@@ -275,26 +278,26 @@ a
 (= "" (list))
 ;=>false
 
-;;;;
-;;;; ----------------Testing variable length arguments----------------
-;;;;
+;;
+;; ----------------Testing variable length arguments----------------
+;;
 
-;;( (fn* (& more) (count more)) 1 2 3)
-;;;=>3
-;;( (fn* (& more) (list? more)) 1 2 3)
-;;;=>true
-;;( (fn* (& more) (count more)) 1)
-;;;=>1
-;;( (fn* (& more) (count more)) )
-;;;=>0
-;;( (fn* (& more) (list? more)) )
-;;;=>true
-;;( (fn* (a & more) (count more)) 1 2 3)
-;;;=>2
-;;( (fn* (a & more) (count more)) 1)
-;;;=>0
-;;( (fn* (a & more) (list? more)) 1)
-;;;=>true
+( (fn* (& more) (count more)) 1 2 3)
+;=>3
+( (fn* (& more) (list? more)) 1 2 3)
+;=>true
+( (fn* (& more) (count more)) 1)
+;=>1
+( (fn* (& more) (count more)) )
+;=>0
+( (fn* (& more) (list? more)) )
+;=>true
+( (fn* (a & more) (count more)) 1 2 3)
+;=>2
+( (fn* (a & more) (count more)) 1)
+;=>0
+( (fn* (a & more) (list? more)) 1)
+;=>true
 
 
 ;;
@@ -408,41 +411,41 @@ a
 ;=>"()"
 
 
-;;;;
-;;;; ----------------------------Testing prn---------------------------
-;;;;
 ;;
-;;(prn)
-;;;/
-;;;=>nil
+;; ----------------------------Testing prn---------------------------
 ;;
-;;(prn "")
-;;;/""
-;;;=>nil
-;;
-;;(prn "abc")
-;;;/"abc"
-;;;=>nil
-;;
-;;(prn "abc  def" "ghi jkl")
-;;;/"abc  def" "ghi jkl"
-;;
-;;(prn "\"")
-;;;/"\\""
-;;;=>nil
-;;
-;;(prn "abc\ndef\nghi")
-;;;/"abc\\ndef\\nghi"
-;;;=>nil
-;;
-;;(prn "abc\\def\\ghi")
-;;;/"abc\\\\def\\\\ghi"
-;;nil
-;;
-;;(prn (list 1 2 "abc" "\"") "def")
-;;;/\(1 2 "abc" "\\""\) "def"
-;;;=>nil
-;;
+
+(prn)
+;/
+;=>nil
+
+(prn "")
+;/""
+;=>nil
+
+(prn "abc")
+;/"abc"
+;=>nil
+
+(prn "abc  def" "ghi jkl")
+;/"abc  def" "ghi jkl"
+
+(prn "\"")
+;/"\\""
+;=>nil
+
+(prn "abc\ndef\nghi")
+;/"abc\\ndef\\nghi"
+;=>nil
+
+(prn "abc\\def\\ghi")
+;/"abc\\\\def\\\\ghi"
+nil
+
+(prn (list 1 2 "abc" "\"") "def")
+;/\(1 2 "abc" "\\""\) "def"
+;=>nil
+
 
 ;;
 ;; -------------------------Testing println--------------------------
