@@ -25,7 +25,6 @@ unordered_map<string, Function> build_namespace() {
     ns["car"] = car;
     ns["cdr"] = cdr;
     ns["prn"] = prn;
-    ns["set"] = set; // FIXME
 
     // to be removed?
     ns["<="] = lte;

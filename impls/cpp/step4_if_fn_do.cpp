@@ -73,6 +73,14 @@ Value *EVAL(Value *ast, Env &env) {
                 };
                 return new FunctionValue { closure };
             }
+            else if(special->matches("set")) {
+                assert(list->size() == 3);
+                //set x (cons 1 (cons 2 (cons 3 ())))
+                auto variable_name = list->at(1)->as_symbol();
+                auto variable = list->at(2);
+                
+                env.set(variable_name, variable);
+            }
         }
         // otherwise: call eval_ast on the list and apply the first element to the rest as before.
         // old code
