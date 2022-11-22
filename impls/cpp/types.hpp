@@ -67,6 +67,7 @@ public:
 
     virtual bool operator==(const Value *) const override;
 
+    auto pop_front() {return m_list.erase(m_list.begin());}
     auto begin() {return m_list.begin();}
     auto end() {return m_list.end();}
 

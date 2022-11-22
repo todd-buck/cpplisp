@@ -221,12 +221,7 @@ Value *nil_q(size_t argc, Value **args) {
 // Create a cons cell with expr1 as car and expr2 and cdr: ie: (exp1 . expr2)
 Value *cons(size_t argc, Value **args) {
     assert(argc >= 2);
-
-    auto car = args[0]->as_list();
-    auto cdr = args[1]->as_list();
-
-    return car->push(cdr)->as_list();
-    // WHY IS THIS SCREAMING??????
+    return args[0]->as_list()->push(args[1]->as_list());
 }
 
 // (car expr)
@@ -244,8 +239,7 @@ Value *car(size_t argc, Value **args) {
 Value *cdr(size_t argc, Value **args) {
     assert(argc >= 1);
     if (args[0]->is_list() && !args[0]->as_list()->is_empty()) {
-        return args[0]->as_list()->at(1);
-        // this is wrong
+        return args[0]->as_list()->pop_front(); // ?? wtf
     }
     return NilValue::the();
 }
