@@ -194,6 +194,9 @@ Value *gte(size_t argc, Value **args) {
 // Returns T if the expr is numeric, () otherwise
 Value *number_q(size_t argc, Value **args) {
     assert(argc >= 1);
+    if (args[0]->is_integer()) // ??
+        return TrueValue::the();
+    return FalseValue::the();
 }
 
 // (symbol? Expr)
@@ -218,16 +221,31 @@ Value *nil_q(size_t argc, Value **args) {
 // Create a cons cell with expr1 as car and expr2 and cdr: ie: (exp1 . expr2)
 Value *cons(size_t argc, Value **args) {
     assert(argc >= 2);
+
+    auto car = args[0]->as_list();
+    auto cdr = args[1]->as_list();
+
+    return car->push(cdr)->as_list();
+    // WHY IS THIS SCREAMING??????
 }
 
 // (car expr)
 // Expr should be a non empty list. Car returns the car cell of the first cons cell
 Value *car(size_t argc, Value **args) {
     assert(argc >= 1);
+    if (args[0]->is_list() && !args[0]->as_list()->is_empty()) {
+        return args[0]->as_list()->at(0);
+    }
+    return NilValue::the();
 }
 
 // (cdr expr)
 // Expr should be a non empty list. Cdr returns the cdr cell of the first cons cell
 Value *cdr(size_t argc, Value **args) {
     assert(argc >= 1);
+    if (args[0]->is_list() && !args[0]->as_list()->is_empty()) {
+        return args[0]->as_list()->at(1);
+        // this is wrong
+    }
+    return NilValue::the();
 }
