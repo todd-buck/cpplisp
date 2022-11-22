@@ -200,12 +200,18 @@ Value *number_q(size_t argc, Value **args) {
 // Returns T if the expr is a name, () otherwise
 Value *symbol_q(size_t argc, Value **args) {
     assert(argc >= 1);
+    if (args[0]->is_symbol())
+        return TrueValue::the();
+    return FalseValue::the();
 }
 
 // (nil? Expr)
 // Return T iff Expr is ()
 Value *nil_q(size_t argc, Value **args) {
     assert(argc >= 1);
+    if (args[0]->is_nil())
+        return TrueValue::the();
+    return FalseValue::the();
 }
 
 // (cons expr1 expr2)
