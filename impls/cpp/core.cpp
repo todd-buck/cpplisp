@@ -25,6 +25,8 @@ unordered_map<string, Function> build_namespace() {
     ns["car"] = car;
     ns["cdr"] = cdr;
     ns["prn"] = prn;
+    ns["and?"] = and_q;
+    ns["or?"] = or_q;
 
     // to be removed?
     ns["<="] = lte;
@@ -243,4 +245,14 @@ Value *cdr(size_t argc, Value **args) {
         return args[0]->as_list()->pop_front(); // ?? wtf
     }
     return NilValue::the();
+}
+
+Value *and_q(size_t argc, Value **args) {
+    assert(argc >= 1);
+    
+}
+
+Value *or_q(size_t argc, Value **args) {
+    assert(argc >= 1);
+    
 }
