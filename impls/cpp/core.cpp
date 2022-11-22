@@ -97,6 +97,11 @@ Value *prn(size_t argc, Value **args) {
 }
 
 Value *list(size_t argc, Value **args) {
+    //assert size == 2
+    //auto cons_cell = new ListValue { }
+    //push 1st arg
+    //push 2nd arg
+    //return cons_cell
     auto parameter_list = new ListValue { };
     for(size_t i = 0; i < argc; i++) {
         parameter_list->push(args[i]);
