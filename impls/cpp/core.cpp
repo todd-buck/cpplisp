@@ -12,16 +12,26 @@ unordered_map<string, Function> build_namespace() {
     ns["-"] = subtract;
     ns["*"] = multiply;
     ns["/"] = divide;
-    ns["prn"] = prn;
-    ns["list"] = list;
     ns["list?"] = list_q;
-    ns["empty?"] = empty_q;
-    ns["count"] = cnt;
     ns["="] = eq;
     ns["<"] = lt;
-    ns["<="] = lte;
     ns[">"] = gt;
+
+    // new additions
+    ns["number?"] = number_q;
+    ns["symbol?"] = symbol_q;
+    ns["nil?"] = nil_q;
+    ns["cons"] = cons;
+    ns["car"] = car;
+    ns["cdr"] = cdr;
+
+    // to be removed?
+    ns["<="] = lte;
     ns[">="] = gte;
+    ns["count"] = cnt; // size of a list
+    ns["prn"] = prn; // empty parenthesis?
+    ns["list"] = list; // list constructor?
+    ns["empty?"] = empty_q; // is this "nil?"
 
     return ns;
 }
@@ -176,4 +186,42 @@ Value *gte(size_t argc, Value **args) {
     } else {
         return FalseValue::the();
     }
+}
+
+// NEW THINGS YAY!!!!!
+
+// (number? Expr)
+// Returns T if the expr is numeric, () otherwise
+Value *number_q(size_t argc, Value **args) {
+    assert(argc >= 1);
+}
+
+// (symbol? Expr)
+// Returns T if the expr is a name, () otherwise
+Value *symbol_q(size_t argc, Value **args) {
+    assert(argc >= 1);
+}
+
+// (nil? Expr)
+// Return T iff Expr is ()
+Value *nil_q(size_t argc, Value **args) {
+    assert(argc >= 1);
+}
+
+// (cons expr1 expr2)
+// Create a cons cell with expr1 as car and expr2 and cdr: ie: (exp1 . expr2)
+Value *cons(size_t argc, Value **args) {
+    assert(argc >= 2);
+}
+
+// (car expr)
+// Expr should be a non empty list. Car returns the car cell of the first cons cell
+Value *car(size_t argc, Value **args) {
+    assert(argc >= 1);
+}
+
+// (cdr expr)
+// Expr should be a non empty list. Cdr returns the cdr cell of the first cons cell
+Value *cdr(size_t argc, Value **args) {
+    assert(argc >= 1);
 }
