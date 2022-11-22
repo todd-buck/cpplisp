@@ -24,12 +24,13 @@ unordered_map<string, Function> build_namespace() {
     ns["cons"] = cons;
     ns["car"] = car;
     ns["cdr"] = cdr;
+    ns["prn"] = prn;
+    ns["set"] = set; // FIXME
 
     // to be removed?
     ns["<="] = lte;
     ns[">="] = gte;
     ns["count"] = cnt; // size of a list
-    ns["prn"] = prn; // empty parenthesis?
     ns["list"] = list; // list constructor?
     ns["empty?"] = empty_q; // is this "nil?"
 
@@ -193,6 +194,7 @@ Value *gte(size_t argc, Value **args) {
 // (number? Expr)
 // Returns T if the expr is numeric, () otherwise
 Value *number_q(size_t argc, Value **args) {
+    // implent as NumberValue
     assert(argc >= 1);
     if (args[0]->is_integer()) // ??
         return TrueValue::the();

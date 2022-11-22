@@ -111,6 +111,7 @@ private:
     string m_str;
 };
 
+// change to NumberValue in implemetation // FIXME
 class IntegerValue : public Value {
 public:
     IntegerValue(long l) : m_long{l} {}
