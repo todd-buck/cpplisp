@@ -249,10 +249,14 @@ Value *cdr(size_t argc, Value **args) {
 
 Value *and_q(size_t argc, Value **args) {
     assert(argc >= 1);
-    
+    if (args[0]->is_truthy() && args[1]->is_truthy())
+        return TrueValue::the();
+    return FalseValue::the();    
 }
 
 Value *or_q(size_t argc, Value **args) {
     assert(argc >= 1);
-    
+    if (args[0]->is_truthy() || args[1]->is_truthy())
+        return TrueValue::the();
+    return FalseValue::the();      
 }
