@@ -81,6 +81,22 @@ Value *EVAL(Value *ast, Env &env) {
                 
                 env.set(variable_name, variable);
             }
+            else if(special->matches("cond")) {
+                // (cond t1 r1 t2 r2 t3 r3)
+                // if t1 is true returns r1...if t2 is true return r2...
+                // Most efficient if lazy evalauation is used.
+                // Behavior undefined if no tn is true. (probably return nil, buit exit(1) is also fine)
+                
+                // FIZME: if this is fucking up do size-1
+                for (int i = 1; i < list->size(); i += 2) {
+                    auto tcond = list->at(i);
+                    auto treturn = list->at(i+1);
+                    if(EVAL(tcond, env)->is_truthy()) {
+                        return EVAL(treturn, env);
+                    } 
+                }
+                return NilValue::the();
+            }
         }
         // otherwise: call eval_ast on the list and apply the first element to the rest as before.
         // old code

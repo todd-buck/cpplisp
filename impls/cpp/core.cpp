@@ -96,6 +96,7 @@ Value *prn(size_t argc, Value **args) {
     return NilValue::the();
 }
 
+// modify to be cons
 Value *list(size_t argc, Value **args) {
     //assert size == 2
     //auto cons_cell = new ListValue { }
