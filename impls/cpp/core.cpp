@@ -230,7 +230,10 @@ Value *nil_q(size_t argc, Value **args) {
 // Create a cons cell with expr1 as car and expr2 and cdr: ie: (exp1 . expr2)
 Value *cons(size_t argc, Value **args) {
     assert(argc >= 2);
-    return args[0]->as_list()->push(args[1]->as_list());
+    auto cons_cell = new ListValue { };
+    cons_cell->push(args[0]);
+    cons_cell->push(args[1]);
+    return cons_cell;
 }
 
 // (car expr)
@@ -247,8 +250,11 @@ Value *car(size_t argc, Value **args) {
 // Expr should be a non empty list. Cdr returns the cdr cell of the first cons cell
 Value *cdr(size_t argc, Value **args) {
     assert(argc >= 1);
+    // return all of the array except first item
     if (args[0]->is_list() && !args[0]->as_list()->is_empty()) {
-        return args[0]->as_list()->pop_front(); // ?? wtf
+        auto newlist = args[0]->as_list();
+        newlist->pop_front();
+        return newlist;
     }
     return NilValue::the();
 }
