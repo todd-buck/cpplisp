@@ -261,18 +261,20 @@ Value *cdr(size_t argc, Value **args) {
 
 // (AND? exp1 exp2)
 // Return nil if either expression is nil
+// TESTED, CORRECT
 Value *and_q(size_t argc, Value **args) {
     assert(argc >= 2);
-    if (args[0]->is_nil() && args[1]->is_nil())
-        return TrueValue::the();
-    return FalseValue::the();    
+    if (args[0]->is_nil() || args[1]->is_nil())
+        return NilValue::the();
+    return TrueValue::the();    
 }
 
 // (OR? exp1 exp2)
 // Return nil if both expressions are nil
+// TESTED, CORRECT
 Value *or_q(size_t argc, Value **args) {
     assert(argc >= 2);
-    if (args[0]->is_nil() || args[1]->is_nil())
-        return TrueValue::the();
-    return FalseValue::the();      
+    if (args[0]->is_nil() && args[1]->is_nil())
+        return NilValue::the();
+    return TrueValue::the();      
 }

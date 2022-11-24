@@ -74,12 +74,17 @@ Value *EVAL(Value *ast, Env &env) {
                 return new FunctionValue { closure };
             }
             else if(special->matches("set")) {
+
+                // I think we can just reuse def here
+
+                // if there's no return variable then it'll still set the variable
+                // but say "set not found" after
                 assert(list->size() == 3);
-                //set x (cons 1 (cons 2 (cons 3 ())))
-                auto variable_name = list->at(1)->as_symbol();
-                auto variable = list->at(2);
+                auto key = list->at(1)->as_symbol();
+                auto val = EVAL(list->at(2), env);
+                env.set(key, val);
+                return val;
                 
-                env.set(variable_name, variable);
             }
             else if(special->matches("cond")) {
                 // (cond t1 r1 t2 r2 t3 r3)
