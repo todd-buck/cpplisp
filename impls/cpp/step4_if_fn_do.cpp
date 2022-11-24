@@ -88,7 +88,7 @@ Value *EVAL(Value *ast, Env &env) {
                 // Behavior undefined if no tn is true. (probably return nil, buit exit(1) is also fine)
                 
                 // FIZME: if this is fucking up do size-1
-                for (int i = 1; i < list->size(); i += 2) {
+                for (int i = 1; i < int(list->size()); i += 2) { // need to cast to int instead of size_t original type
                     auto tcond = list->at(i);
                     auto treturn = list->at(i+1);
                     if(EVAL(tcond, env)->is_truthy()) {
