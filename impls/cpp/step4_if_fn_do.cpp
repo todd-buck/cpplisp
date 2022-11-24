@@ -75,6 +75,8 @@ Value *EVAL(Value *ast, Env &env) {
             }
             else if(special->matches("set")) {
 
+                // TESTED, WORKS
+
                 // I think we can just reuse def here
 
                 // if there's no return variable then it'll still set the variable
@@ -84,7 +86,7 @@ Value *EVAL(Value *ast, Env &env) {
                 auto val = EVAL(list->at(2), env);
                 env.set(key, val);
                 return val;
-                
+
             }
             else if(special->matches("cond")) {
                 // (cond t1 r1 t2 r2 t3 r3)

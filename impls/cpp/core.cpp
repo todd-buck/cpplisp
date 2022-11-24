@@ -250,11 +250,12 @@ Value *car(size_t argc, Value **args) {
 // Expr should be a non empty list. Cdr returns the cdr cell of the first cons cell
 Value *cdr(size_t argc, Value **args) {
     assert(argc >= 1);
-    // return all of the array except first item
     if (args[0]->is_list() && !args[0]->as_list()->is_empty()) {
-        auto newlist = args[0]->as_list();
-        newlist->pop_front();
-        return newlist;
+        auto parameter_list = new ListValue { };
+        for(size_t i = 1; i < args[0]->as_list()->size(); i++) {
+            parameter_list->push(args[0]->as_list()->at(i));
+        }
+        return parameter_list;
     }
     return NilValue::the();
 }
