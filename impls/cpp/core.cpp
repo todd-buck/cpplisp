@@ -201,6 +201,9 @@ Value *gte(size_t argc, Value **args) {
 // (number? Expr)
 // Returns T if the expr is numeric, () otherwise
 Value *number_q(size_t argc, Value **args) {
+
+    // TESTED, WORKS
+
     // implent as NumberValue
     assert(argc >= 1);
     if (args[0]->is_integer()) // ??

@@ -76,15 +76,13 @@ Value *EVAL(Value *ast, Env &env) {
             else if(special->matches("set")) {
 
                 // TESTED, WORKS
-
                 // I think we can just reuse def here
-
-                // if there's no return variable then it'll still set the variable
-                // but say "set not found" after
                 assert(list->size() == 3);
                 auto key = list->at(1)->as_symbol();
                 auto val = EVAL(list->at(2), env);
                 env.set(key, val);
+                // If there's no return variable then it'll still set the variable
+                // but say "set not found" after. Returning nullptr creates a segfault.
                 return val;
 
             }
@@ -93,8 +91,8 @@ Value *EVAL(Value *ast, Env &env) {
                 // if t1 is true returns r1...if t2 is true return r2...
                 // Most efficient if lazy evalauation is used.
                 // Behavior undefined if no tn is true. (probably return nil, buit exit(1) is also fine)
-                
-                // FIZME: if this is fucking up do size-1
+
+                // FIXME: if this is fucking up do size-1
                 for (int i = 1; i < int(list->size()); i += 2) { // need to cast to int instead of size_t original type
                     auto tcond = list->at(i);
                     auto treturn = list->at(i+1);
