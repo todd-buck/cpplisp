@@ -208,7 +208,7 @@ Value *number_q(size_t argc, Value **args) {
     assert(argc >= 1);
     if (args[0]->is_integer()) // ??
         return TrueValue::the();
-    return FalseValue::the();
+    return NilValue::the();
 }
 
 // (symbol? Expr)
@@ -217,7 +217,7 @@ Value *symbol_q(size_t argc, Value **args) {
     assert(argc >= 1);
     if (args[0]->is_symbol())
         return TrueValue::the();
-    return FalseValue::the();
+    return NilValue::the();
 }
 
 // (nil? Expr)
