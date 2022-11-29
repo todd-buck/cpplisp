@@ -25,14 +25,14 @@ Value *EVAL(Value *ast, Env &env) {
         auto first= list->at(0); 
         if(first->is_symbol()) {
             auto special = first->as_symbol();
-            if (special->matches("def!")) {
+            if (special->matches("define")) {
                 // symbol "def!": call the set method of the current environment (second parameter of EVAL called env) using the unevaluated first parameter (second list element) as the symbol key and the evaluated second parameter as the value.
                 auto key = list->at(1)->as_symbol();
                 auto val = EVAL(list->at(2), env);
                 env.set(key, val);
                 return val;
             }
-            else if (special->matches("let*")) {
+            else if (special->matches("let*")) { // remove
                 // symbol "let*": create a new environment using the current environment as the outer value and then use the first parameter as a list of new bindings in the "let*" environment. Take the second element of the binding list, call EVAL using the new "let*" environment as the evaluation environment, then call set on the "let*" environment using the first binding list element as the key and the evaluated second element as the value. This is repeated for each odd/even pair in the binding list. Note in particular, the bindings earlier in the list can be referred to by later bindings. Finally, the second parameter (third element) of the original let* form is evaluated using the new "let*" environment and the result is returned as the result of the let* (the new let environment is discarded upon completion).
                 auto new_env = new Env { &env };
                 auto bindings = list->at(1)->as_list();
@@ -43,7 +43,7 @@ Value *EVAL(Value *ast, Env &env) {
                     new_env->set(key, val);
                 }
                 return EVAL(list->at(2), *new_env);
-            } else if(special->matches("do")) {
+            } else if(special->matches("do")) { // remove
                 Value *result = nullptr;
                 assert(list->size() > 1);
                 for(size_t i = 0; i < list->size(); i++) {
@@ -93,7 +93,7 @@ Value *EVAL(Value *ast, Env &env) {
                 // Behavior undefined if no tn is true. (probably return nil, buit exit(1) is also fine)
 
                 // FIXME: if this is fucking up do size-1
-                for (int i = 1; i < int(list->size()); i += 2) { // need to cast to int instead of size_t original type
+                for (size_t i = 1; i < list->size(); i += 2) { // need to cast to int instead of size_t original type
                     auto tcond = list->at(i);
                     auto treturn = list->at(i+1);
                     if(EVAL(tcond, env)->is_truthy()) {
