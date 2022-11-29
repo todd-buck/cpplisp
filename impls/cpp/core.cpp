@@ -19,7 +19,7 @@ unordered_map<string, Function> build_namespace() {
 
     // new additions
     ns["number?"] = number_q;
-    ns["symbol?"] = symbol_q;
+    //ns["symbol?"] = symbol_q;
     ns["nil?"] = nil_q;
     ns["cons"] = cons;
     ns["car"] = car;
@@ -211,25 +211,25 @@ Value *number_q(size_t argc, Value **args) {
     return NilValue::the();
 }
 
-// (symbol? Expr)
-// Returns T if the expr is a name, () otherwise
-Value *symbol_q(size_t argc, Value **args) {
-    assert(argc >= 1);
+// // (symbol? Expr)
+// // Returns T if the expr is a name, () otherwise
+// Value *symbol_q(size_t argc, Value **args) {
+//     assert(argc >= 1);
 
-    auto key = args[0]->as_symbol();
+//     auto key = args[0]->as_symbol();
     
-    // string name = args[0];
+//     // string name = args[0];
     
-    // for (size_t i = 0; i < sym->length(); i++) {
-    //     if ( !isalpha(sym->at(i)) || sym->at(i) != '_') {
-    //         return NilValue::the();
-    //     }
-    // }
+//     // for (size_t i = 0; i < sym->length(); i++) {
+//     //     if ( !isalpha(sym->at(i)) || sym->at(i) != '_') {
+//     //         return NilValue::the();
+//     //     }
+//     // }
 
-    //return TrueValue::the();
+//     //return TrueValue::the();
 
-    return key;
-}
+//     return key;
+// }
 
 // (nil? Expr)
 // Return T iff Expr is ()

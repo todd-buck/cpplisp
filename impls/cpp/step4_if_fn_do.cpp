@@ -1,5 +1,6 @@
 #include <iostream>
 #include <unordered_map>
+#include <regex>
 
 #include "../../linenoise.hpp"
 #include "reader.hpp"
@@ -74,10 +75,24 @@ Value *EVAL(Value *ast, Env &env) {
                 return new FunctionValue { closure };
             }
             else if(special->matches("set")) {
+                //set potential_variable value
+                assert(list->size() == 3);
+
+                //casts potential variable as a string
+                string potential_variable = list->at(1)->as_symbol()->inspect();
+
+                //if variable is onyl numbers
+                if(potential_variable.find_first_not_of("0123456789") != std::string::npos) {
+                    throw new ExceptionValue { "variable (" + potential_variable + ") cannot contain only numbers." };
+                }
+
+                //if variable contains illegal characters
+                if(regex_match(potential_variable.begin(), potential_variable.end(), regex("^[a-zA-Z0-9_]*$"))) {
+                    throw new ExceptionValue { "variable (" + potential_variable + ") must only contain letters, numbers, and variables." };
+                }
 
                 // TESTED, WORKS
                 // I think we can just reuse def here
-                assert(list->size() == 3);
                 auto key = list->at(1)->as_symbol();
                 auto val = EVAL(list->at(2), env);
                 env.set(key, val);
@@ -101,6 +116,15 @@ Value *EVAL(Value *ast, Env &env) {
                     } 
                 }
                 return NilValue::the();
+            }
+            else if(special->matches("symbol?")) {
+                assert(list->size() == 2);
+                
+                if(env.find(list->at(1)->as_symbol()) == nullptr) {
+                    return FalseValue::the();
+                }
+
+                return TrueValue::the();
             }
         }
         // otherwise: call eval_ast on the list and apply the first element to the rest as before.
