@@ -215,9 +215,20 @@ Value *number_q(size_t argc, Value **args) {
 // Returns T if the expr is a name, () otherwise
 Value *symbol_q(size_t argc, Value **args) {
     assert(argc >= 1);
-    if (args[0]->is_symbol())
-        return TrueValue::the();
-    return NilValue::the();
+
+    auto key = args[0]->as_symbol();
+    
+    // string name = args[0];
+    
+    // for (size_t i = 0; i < sym->length(); i++) {
+    //     if ( !isalpha(sym->at(i)) || sym->at(i) != '_') {
+    //         return NilValue::the();
+    //     }
+    // }
+
+    //return TrueValue::the();
+
+    return key;
 }
 
 // (nil? Expr)
@@ -234,7 +245,16 @@ Value *nil_q(size_t argc, Value **args) {
 Value *cons(size_t argc, Value **args) {
     assert(argc >= 2);
     auto cons_cell = new ListValue { };
-    cons_cell->push(args[0]);
+
+    if (args[0]->is_list()) {
+        for (size_t i = 0; i < args[0]->as_list()->size(); i++) {
+            cons_cell->push(args[0]->as_list()->at(i));
+        }
+    }
+    else if (args[0]->is_integer()) {
+        cons_cell->push(args[0]);
+    }
+
     cons_cell->push(args[1]);
     return cons_cell;
 }
