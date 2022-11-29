@@ -35,6 +35,16 @@ unordered_map<string, Function> build_namespace() {
     ns["list"] = list; // list constructor?
     ns["empty?"] = empty_q; // is this "nil?"
 
+    // for symbol?
+    ns["define"];
+    ns["let*"];
+    ns["do"];
+    ns["if"];
+    ns["fn*"];
+    ns["set"];
+    ns["cond"];
+    ns["symbol?"];
+
     return ns;
 }
 
@@ -93,7 +103,7 @@ Value *divide(size_t argc, Value **args) {
 Value *prn(size_t argc, Value **args) {
     assert(argc >= 1);
     cout << print_string(args[0]) << endl;
-    return NilValue::the();
+    return NothingValue::the();
 }
 
 // modify to be cons
@@ -139,12 +149,13 @@ Value *eq(size_t argc, Value **args) {
     auto a = args[0];
     auto b = args[1];
 
-    if(*a == b || (a->is_nil() && b->is_nil())) {
+    if(*a == b || (a->is_nil() && b->is_nil())
+        || (a->is_true() && b->is_true())
+        || (a->is_false() && b->is_false())) {
         return TrueValue::the();
     }
-    
-    return NilValue::the();
 
+    return NilValue::the();
 }
 
 Value *lt(size_t argc, Value **args) {
@@ -206,10 +217,8 @@ Value *gte(size_t argc, Value **args) {
 Value *number_q(size_t argc, Value **args) {
 
     // TESTED, WORKS
-
-    // implent as NumberValue
     assert(argc >= 1);
-    if (args[0]->is_integer()) // ??
+    if (args[0]->is_integer())
         return TrueValue::the();
     return NilValue::the();
 }
@@ -270,6 +279,8 @@ Value *cdr(size_t argc, Value **args) {
 // (AND? exp1 exp2)
 // Return nil if either expression is nil
 // TESTED, CORRECT
+
+// using false and nil synonymously?
 Value *and_q(size_t argc, Value **args) {
     assert(argc >= 2);
     if (args[0]->is_nil() || args[1]->is_nil())

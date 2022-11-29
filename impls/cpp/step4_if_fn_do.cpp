@@ -26,12 +26,22 @@ Value *EVAL(Value *ast, Env &env) {
         auto first= list->at(0); 
         if(first->is_symbol()) {
             auto special = first->as_symbol();
-            if (special->matches("define")) {
-                // symbol "def!": call the set method of the current environment (second parameter of EVAL called env) using the unevaluated first parameter (second list element) as the symbol key and the evaluated second parameter as the value.
-                auto key = list->at(1)->as_symbol();
-                auto val = EVAL(list->at(2), env);
+            if (special->matches("define")) { // keep
+                auto key = list->at(1)->as_symbol();                
+                auto env_ptr = &env;
+                auto binds = list->at(2)->as_list();
+                auto body = list->at(3);
+                auto closure = [env_ptr, binds, body](size_t argc, Value ** args) {
+                    auto exprs = new ListValue {};
+                    for(size_t i = 0; i < argc; i++) {
+                        exprs->push(args[i]);
+                    }
+                    auto function_env = new Env { env_ptr, binds, exprs };
+                    return EVAL(body, *function_env);
+                };
+                auto val = new FunctionValue { closure };
                 env.set(key, val);
-                return val;
+                return NothingValue::the();
             }
             else if (special->matches("let*")) { // remove
                 // symbol "let*": create a new environment using the current environment as the outer value and then use the first parameter as a list of new bindings in the "let*" environment. Take the second element of the binding list, call EVAL using the new "let*" environment as the evaluation environment, then call set on the "let*" environment using the first binding list element as the key and the evaluated second element as the value. This is repeated for each odd/even pair in the binding list. Note in particular, the bindings earlier in the list can be referred to by later bindings. Finally, the second parameter (third element) of the original let* form is evaluated using the new "let*" environment and the result is returned as the result of the let* (the new let environment is discarded upon completion).
@@ -51,7 +61,7 @@ Value *EVAL(Value *ast, Env &env) {
                     result = eval_ast(list->at(i), env);
                     return result;
                 }
-            } else if(special->matches("if")) {
+            } else if(special->matches("if")) { // keep
                 auto condition = list->at(1);
                 auto true_expr = list->at(2);
                 auto false_expr = list->size() >= 4 ? list->at(3) : NilValue::the();
@@ -60,7 +70,7 @@ Value *EVAL(Value *ast, Env &env) {
                 } else {
                     return EVAL(false_expr, env);
                 }
-            } else if(special->matches("fn*")) {
+            } else if(special->matches("fn*")) { // remove
                 auto env_ptr = &env;
                 auto binds = list->at(1)->as_list();
                 auto body = list->at(2);
@@ -74,7 +84,7 @@ Value *EVAL(Value *ast, Env &env) {
                 };
                 return new FunctionValue { closure };
             }
-            else if(special->matches("set")) {
+            else if(special->matches("set")) { // keep
                 //set potential_variable value
                 assert(list->size() == 3);
 
@@ -101,7 +111,7 @@ Value *EVAL(Value *ast, Env &env) {
                 return NothingValue::the();
 
             }
-            else if(special->matches("cond")) {
+            else if(special->matches("cond")) { // keep
                 // (cond t1 r1 t2 r2 t3 r3)
                 // if t1 is true returns r1...if t2 is true return r2...
                 // Most efficient if lazy evalauation is used.
@@ -117,7 +127,7 @@ Value *EVAL(Value *ast, Env &env) {
                 }
                 return NilValue::the();
             }
-            else if(special->matches("symbol?")) {
+            else if(special->matches("symbol?")) { // keep
                 if(list->size() != 2) {
                     throw new ExceptionValue { "Usage: (symbol? expr)" };
                 }
@@ -144,7 +154,6 @@ Value *EVAL(Value *ast, Env &env) {
             args[i - 1] = eval_list->at(i);
         }
         return fn(eval_list->size() - 1, args);
-        
 
     }
 }
