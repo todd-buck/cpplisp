@@ -134,13 +134,14 @@ Value *cnt(size_t argc, Value **args) {
 }
 
 Value *eq(size_t argc, Value **args) {
+    
     assert(argc >= 2);
     auto a = args[0];
     auto b = args[1];
 
     if(*a == b) 
         return TrueValue::the();
-    return FalseValue::the();
+    return NilValue::the();
 
 }
 
