@@ -106,6 +106,36 @@
 ;; (= expr1 expr2)
 ;; Compares the values of two atoms or (). Returns () when either expression is a larger list.
 
+(= nil nil)
+;=>true
+
+(= (list 1 2 3) (list 1 2 3))
+;=>true
+
+(= 1 1)
+;=>true
+
+(= 1 2)
+;=>nil
+
+(= (list 1 2 3) (list 1 2 3 4))
+;=>nil
+
+(= nil 1)
+;=>nil
+
+(= nil (list 1 2 3))
+;=>nil
+
+(= 1 (list 1 2 3))
+;=>nil
+
+;; TESTING INEQUALITY
+;; (< expr1 expr2)
+;; Return t when expr1 is less than expr2. Expr1 and expr2 must be numbers.
+;; (> expr1 expr2)
+;; Return t when expr1 is greater  expr2. Expr1 and expr2 must be numbers.
+
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
