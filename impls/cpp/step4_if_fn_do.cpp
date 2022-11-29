@@ -83,7 +83,7 @@ Value *EVAL(Value *ast, Env &env) {
                 env.set(key, val);
                 // If there's no return variable then it'll still set the variable
                 // but say "set not found" after. Returning nullptr creates a segfault.
-                return val;
+                return NothingValue::the();
 
             }
             else if(special->matches("cond")) {

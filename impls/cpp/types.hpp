@@ -16,6 +16,7 @@ class ExceptionValue;
 class TrueValue;
 class FalseValue;
 class NilValue;
+class NothingValue;
 
 class Value {
 public:
@@ -240,13 +241,16 @@ private:
 
 class NothingValue : public Value {
 public:
-
+    static NothingValue *the() {
+        if (!s_instance)
+            s_instance = new NothingValue;
+        return s_instance;
+    }
     virtual Type type() const override {return Type::Nothing;}
 
     virtual string inspect() const override {
         return "";
     }
-
 private:
     NothingValue() { }
 

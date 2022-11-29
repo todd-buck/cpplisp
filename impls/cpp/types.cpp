@@ -47,7 +47,6 @@ NothingValue *Value::as_nothing() {
     return static_cast<NothingValue*>(this);
 }
 
-
 //builds string out of list (for printing)
 string ListValue::inspect() const {
     string out = "(";
