@@ -211,26 +211,6 @@ Value *number_q(size_t argc, Value **args) {
     return NilValue::the();
 }
 
-// // (symbol? Expr)
-// // Returns T if the expr is a name, () otherwise
-// Value *symbol_q(size_t argc, Value **args) {
-//     assert(argc >= 1);
-
-//     auto key = args[0]->as_symbol();
-    
-//     // string name = args[0];
-    
-//     // for (size_t i = 0; i < sym->length(); i++) {
-//     //     if ( !isalpha(sym->at(i)) || sym->at(i) != '_') {
-//     //         return NilValue::the();
-//     //     }
-//     // }
-
-//     //return TrueValue::the();
-
-//     return key;
-// }
-
 // (nil? Expr)
 // Return T iff Expr is ()
 Value *nil_q(size_t argc, Value **args) {
@@ -238,6 +218,7 @@ Value *nil_q(size_t argc, Value **args) {
     if (args[0]->is_nil())
         return TrueValue::the();
     return FalseValue::the();
+
 }
 
 // (cons expr1 expr2)
