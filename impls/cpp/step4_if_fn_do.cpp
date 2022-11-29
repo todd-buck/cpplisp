@@ -79,15 +79,15 @@ Value *EVAL(Value *ast, Env &env) {
                 assert(list->size() == 3);
 
                 //casts potential variable as a string
-                string potential_variable = list->at(1)->as_symbol()->inspect();
+                string potential_variable = list->at(1)->inspect();
 
-                //if variable is onyl numbers
-                if(potential_variable.find_first_not_of("0123456789") != std::string::npos) {
+                //if variable is only numbers
+                if(regex_match(potential_variable.begin(), potential_variable.end(), regex("^[0-9]*$"))) {
                     throw new ExceptionValue { "variable (" + potential_variable + ") cannot contain only numbers." };
                 }
 
                 //if variable contains illegal characters
-                if(regex_match(potential_variable.begin(), potential_variable.end(), regex("^[a-zA-Z0-9_]*$"))) {
+                if(!regex_match(potential_variable.begin(), potential_variable.end(), regex("^[A-Za-z0-9_-]*$"))) {
                     throw new ExceptionValue { "variable (" + potential_variable + ") must only contain letters, numbers, and variables." };
                 }
 
@@ -118,8 +118,16 @@ Value *EVAL(Value *ast, Env &env) {
                 return NilValue::the();
             }
             else if(special->matches("symbol?")) {
-                assert(list->size() == 2);
+                if(list->size() != 2) {
+                    throw new ExceptionValue { "Usage: (symbol? expr)" };
+                }
+
+                // If expr is any type other than symbol, return false
+                if(list->at(1)->type() != Value::Type::Symbol) {
+                    return FalseValue::the();
+                }
                 
+                // If symbol is not in current or top-level environment, return false
                 if(env.find(list->at(1)->as_symbol()) == nullptr) {
                     return FalseValue::the();
                 }
