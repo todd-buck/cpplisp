@@ -27,7 +27,8 @@ public:
         Exception,
         True,
         False,
-        Nil
+        Nil,
+        Nothing // added
     };
 
     virtual Type type() const = 0;
@@ -39,6 +40,7 @@ public:
     virtual bool is_truthy() const { return true; }
     virtual bool is_list() const { return false; }
     virtual bool is_integer() const { return false; }
+    virtual bool is_nothing() const { return false; } // added
 
     virtual bool operator==(const Value *) const { return false; }
 
@@ -50,6 +52,8 @@ public:
     TrueValue *as_true();
     FalseValue *as_false();
     NilValue *as_nil();
+    NothingValue *as_nothing(); // added
+
 };
 
 //stores list in vectors
@@ -232,6 +236,21 @@ private:
     NilValue() { }
 
     static inline NilValue *s_instance { nullptr };
+};
+
+class NothingValue : public Value {
+public:
+
+    virtual Type type() const override {return Type::Nothing;}
+
+    virtual string inspect() const override {
+        return "";
+    }
+
+private:
+    NothingValue() { }
+
+    static inline NothingValue *s_instance { nullptr };
 };
 
 struct EnvHash {

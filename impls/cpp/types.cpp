@@ -42,6 +42,11 @@ NilValue *Value::as_nil() {
     return static_cast<NilValue*>(this);
 }
 
+NothingValue *Value::as_nothing() {
+    assert(type() == Type::Nothing);
+    return static_cast<NothingValue*>(this);
+}
+
 
 //builds string out of list (for printing)
 string ListValue::inspect() const {
