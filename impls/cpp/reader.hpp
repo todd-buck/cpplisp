@@ -91,9 +91,6 @@ struct Tokenizer {
                         return view.substr(start, m_index - start);
                     }
 
-                    //numbers // FIXME
-                    
-                    case '0': // added
                     case '-':
                     case '1':
                     case '2':
@@ -111,7 +108,6 @@ struct Tokenizer {
                         while (!done && m_index < m_input.length()) {
                             c = m_input.at(m_index);
                             switch (c) {
-                            case '.': // added
                             case '0':
                             case '1':
                             case '2':
