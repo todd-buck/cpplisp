@@ -1,0 +1,698 @@
+-----------------------------------------------------
+TESTING IF
+(if exp1 expT expF) 
+Depending on the result of exp1 either expT or expF is evaluated and returned. 
+If exp1 is () then expF is evaluated, otherwise, expT is evaluated.
+TEST: '(if (= 1 1) true false)' -> ['',true] -> SUCCESS
+TEST: '(if (= 1 2) true false)' -> ['',false] -> SUCCESS
+TEST: '(if nil true false)' -> ['',false] -> SUCCESS
+TEST: '(if (= 1 1) (+ 3 3) (+ 4 4))' -> ['',6] -> SUCCESS
+TEST: '(if (= 1 2) (+ 3 3) (+ 4 4))' -> ['',8] -> SUCCESS
+TEST: '(if true (+ 1 1))' -> ['',2] -> SUCCESS
+TEST: '(if true (if true (+ 1 1) (+ 2 2)) false)' -> ['',2] -> SUCCESS
+TESTING COND
+(cond t1 r1 t2 r2 t3 r3)
+if t1 is true returns r1...if t2 is true return r2...
+if no tn is true, return nil
+TEST: '(cond true 1 true 2 true 3)' -> ['',1] -> SUCCESS
+TEST: '(cond false 1 false 2 false 3)' -> ['',nil] -> SUCCESS
+TEST: '(cond true 1 false 2 false 3)' -> ['',1] -> SUCCESS
+TEST: '(cond false 1 true 2 false 3)' -> ['',2] -> SUCCESS
+TEST: '(cond false 1 false 2 true 3)' -> ['',3] -> SUCCESS
+TEST: '(cond (= 1 1) (+ 1 1) (= 2 3) (+ 2 3))' -> ['',2] -> SUCCESS
+TEST: '(cond (= 1 2) (+ 1 2) (= 2 (+ 1 1)) (+ 2 2))' -> ['',4] -> SUCCESS
+TEST: '(cond false (cond true 1 false 2) true (cond false 3 true 4))' -> ['',4] -> SUCCESS
+TESTING SET
+(set name exp)
+The symbol name is associated with the value of exp
+TEST: '(set a 5)' -> ['',] -> SUCCESS (result ignored)
+TEST: 'a' -> ['',5] -> SUCCESS
+TEST: '(set a 6)' -> ['',] -> SUCCESS (result ignored)
+TEST: 'a' -> ['',6] -> SUCCESS
+TEST: '(set b (+ 2 (* 4 5))) ' -> ['',] -> SUCCESS (result ignored)
+TEST: 'b' -> ['',22] -> SUCCESS
+TESTING ARITHMETIC
+(+ expr1 epr2)
+Returns the sum of expressions. The expressions must be numbers
+(+ expr1 epr2)
+Returns the difference of expressions. The expressions must be numbers
+(* expr1 epr2)
+Returns the product of expressions. The expressions must be numbers
+(/ expr1 epr2)
+Returns the quotient. The expressions must be numbers
+TEST: '(+ 1 2)' -> ['',3] -> SUCCESS
+TEST: '(+ 5 (* 2 3))' -> ['',11] -> SUCCESS
+TEST: '(- (+ 5 (* 2 3)) 3)' -> ['',8] -> SUCCESS
+TEST: '(/ (- (+ 5 (* 2 3)) 3) 4)' -> ['',2] -> SUCCESS
+TEST: '(/ (- (+ 515 (* 87 311)) 302) 27)' -> ['',1010] -> SUCCESS
+TEST: '(* -3 6)' -> ['',-18] -> SUCCESS
+TEST: '(/ (- (+ 515 (* -87 311)) 296) 27)' -> ['',-994] -> SUCCESS
+TESTING EQUALITY
+(= expr1 expr2)
+Compares the values of two atoms or (). Returns () when either expression is a larger list.
+TEST: '(= nil nil)' -> ['',true] -> SUCCESS
+TEST: '(= (list 1 2 3) (list 1 2 3))' -> ['',true] -> SUCCESS
+TEST: '(= 1 1)' -> ['',true] -> SUCCESS
+TEST: '(= 1 2)' -> ['',nil] -> SUCCESS
+TEST: '(= (list 1 2 3) (list 1 2 3 4))' -> ['',nil] -> SUCCESS
+TEST: '(= nil 1)' -> ['',nil] -> SUCCESS
+TEST: '(= nil (list 1 2 3))' -> ['',nil] -> SUCCESS
+TEST: '(= 1 (list 1 2 3))' -> ['',nil] -> SUCCESS
+--------------------------------------TESTING INEQUALITY-------------------------------------------
+                                         (< expr1 expr2)
+                Return t when expr1 is less than expr2. Expr1 and expr2 must be numbers.
+                                         (> expr1 expr2)
+                Return t when expr1 is greater than expr2. Expr1 and expr2 must be numbers.
+TEST: '(< 2 3)' -> ['',true] -> SUCCESS
+TEST: '(< 3 3)' -> ['',false] -> SUCCESS
+TEST: '(< 4 3)' -> ['',false] -> SUCCESS
+TEST: '(> 2 3)' -> ['',false] -> SUCCESS
+TEST: '(> 3 3)' -> ['',false] -> SUCCESS
+TEST: '(> 4 3)' -> ['',true] -> SUCCESS
+-----------------------------------------------------------------------------------------------------
+TESTING CONS
+(cons expr1 expr2)
+Create a cons cell with expr1 as car and expr2 and cdr: ie: (exp1 . expr2)
+TESTING CAR
+(car expr)
+Expr should be a non empty list. Car returns the car cell of the first cons cell
+TESTING CDR
+(cdr expr)
+Expr should be a non empty list. Cdr returns the cdr cell of the first cons cell
+TESTING NUMBER?
+(number? Expr)
+Returns T if the expr is numeric, () otherwise
+TEST: '(number? 1)' -> ['',true] -> SUCCESS
+TEST: '(number? (+ 1 2))' -> ['',true] -> SUCCESS
+TEST: '(number? nil)' -> ['',nil] -> SUCCESS
+TEST: '(number? (list 1 2 3))' -> ['',nil] -> SUCCESS
+TEST: '(number? true)' -> ['',nil] -> SUCCESS
+TESTING SYMBOL?
+(symbol? Expr)
+Returns T if the expr is a name, () otherwise
+TEST: '(symbol? 5)' -> ['',false] -> SUCCESS
+TEST: '(set a 5)' -> ['',] -> SUCCESS (result ignored)
+TEST: '(symbol? a)' -> ['',true] -> SUCCESS
+TEST: '(symbol? (list 1 2 3))' -> ['',false] -> SUCCESS
+TEST: '(set b (list 1 2 3))' -> ['',] -> SUCCESS (result ignored)
+TEST: '(symbol? b)' -> ['',true] -> SUCCESS
+TEST: '(symbol? true)' -> ['',false] -> SUCCESS
+TEST: '(set c true)' -> ['',] -> SUCCESS (result ignored)
+TEST: '(symbol? c)' -> ['',true] -> SUCCESS
+TEST: '(symbol? nil)' -> ['',false] -> SUCCESS
+TEST: '(set d nil)' -> ['',] -> SUCCESS (result ignored)
+TEST: '(symbol? d)' -> ['',true] -> SUCCESS
+TEST: '(symbol? e)' -> ['',false] -> SUCCESS
+
+----------------------Testing list functions----------------------
+
+TEST: '(list)' -> ['',()] -> SUCCESS
+TEST: '(list? (list))' -> ['',true] -> SUCCESS
+TEST: '(empty? (list))' -> ['',true] -> SUCCESS
+TEST: '(empty? (list 1))' -> ['',false] -> SUCCESS
+TEST: '(list 1 2 3)' -> ['',(1 2 3)] -> SUCCESS
+TEST: '(count (list 1 2 3))' -> ['',3] -> SUCCESS
+TEST: '(count (list))' -> ['',0] -> SUCCESS
+TEST: '(count nil)' -> ['',0] -> SUCCESS
+TEST: '(if (> (count (list 1 2 3)) 3) 89 78)' -> ['',78] -> SUCCESS
+TEST: '(if (>= (count (list 1 2 3)) 3) 89 78)' -> ['',89] -> SUCCESS
+
+------------------------Testing if form-------------------------
+
+TEST: '(if true 7 8)' -> ['',7] -> SUCCESS
+TEST: '(if false 7 8)' -> ['',8] -> SUCCESS
+TEST: '(if false 7 false)' -> ['',false] -> SUCCESS
+TEST: '(if true (+ 1 7) (+ 1 8))' -> ['',8] -> SUCCESS
+TEST: '(if false (+ 1 7) (+ 1 8))' -> ['',9] -> SUCCESS
+TEST: '(if nil 7 8)' -> ['',8] -> SUCCESS
+TEST: '(if 0 7 8)' -> ['',7] -> SUCCESS
+TEST: '(if (list) 7 8)' -> ['',7] -> SUCCESS
+TEST: '(if (list 1 2 3) 7 8)' -> ['',7] -> SUCCESS
+TEST: '(= (list) nil)' -> ['',false] -> FAIL (line 274):
+    Expected : '.*\nfalse'
+    Got      : '(= (list) nil)\nnil'
+
+----------------------Testing 1-way if form----------------------
+
+TEST: '(if false (+ 1 7))' -> ['',nil] -> SUCCESS
+TEST: '(if nil 8)' -> ['',nil] -> SUCCESS
+TEST: '(if nil 8 7)' -> ['',7] -> SUCCESS
+TEST: '(if true (+ 1 7))' -> ['',8] -> SUCCESS
+
+--------------------Testing basic conditionals--------------------
+
+TEST: '(= 2 1)' -> ['',false] -> FAIL (line 296):
+    Expected : '.*\nfalse'
+    Got      : '(= 2 1)\nnil'
+TEST: '(= 1 1)' -> ['',true] -> SUCCESS
+TEST: '(= 1 2)' -> ['',false] -> FAIL (line 300):
+    Expected : '.*\nfalse'
+    Got      : '(= 1 2)\nnil'
+TEST: '(= 1 (+ 1 1))' -> ['',false] -> FAIL (line 302):
+    Expected : '.*\nfalse'
+    Got      : '(= 1 (+ 1 1))\nnil'
+TEST: '(= 2 (+ 1 1))' -> ['',true] -> SUCCESS
+TEST: '(= nil 1)' -> ['',false] -> FAIL (line 306):
+    Expected : '.*\nfalse'
+    Got      : '(= nil 1)\nnil'
+TEST: '(= nil nil)' -> ['',true] -> SUCCESS
+TEST: '(> 2 1)' -> ['',true] -> SUCCESS
+TEST: '(> 1 1)' -> ['',false] -> SUCCESS
+TEST: '(> 1 2)' -> ['',false] -> SUCCESS
+TEST: '(>= 2 1)' -> ['',true] -> SUCCESS
+TEST: '(>= 1 1)' -> ['',true] -> SUCCESS
+TEST: '(>= 1 2)' -> ['',false] -> SUCCESS
+TEST: '(< 2 1)' -> ['',false] -> SUCCESS
+TEST: '(< 1 1)' -> ['',false] -> SUCCESS
+TEST: '(< 1 2)' -> ['',true] -> SUCCESS
+TEST: '(<= 2 1)' -> ['',false] -> SUCCESS
+TEST: '(<= 1 1)' -> ['',true] -> SUCCESS
+TEST: '(<= 1 2)' -> ['',true] -> SUCCESS
+
+------------------------Testing equality------------------------
+
+TEST: '(= 1 1)' -> ['',true] -> SUCCESS
+TEST: '(= 0 0)' -> ['',true] -> SUCCESS
+TEST: '(= 1 0)' -> ['',false] -> FAIL (line 348):
+    Expected : '.*\nfalse'
+    Got      : '(= 1 0)\nnil'
+TEST: '(= true true)' -> ['',true] -> FAIL (line 350):
+    Expected : '.*\ntrue'
+    Got      : '(= true true)\nnil'
+TEST: '(= false false)' -> ['',true] -> FAIL (line 352):
+    Expected : '.*\ntrue'
+    Got      : '(= false false)\nnil'
+TEST: '(= nil nil)' -> ['',true] -> SUCCESS
+TEST: '(= (list) (list))' -> ['',true] -> SUCCESS
+TEST: '(= (list 1 2) (list 1 2))' -> ['',true] -> SUCCESS
+TEST: '(= (list 1) (list))' -> ['',false] -> FAIL (line 361):
+    Expected : '.*\nfalse'
+    Got      : '(= (list 1) (list))\nnil'
+TEST: '(= (list) (list 1))' -> ['',false] -> FAIL (line 363):
+    Expected : '.*\nfalse'
+    Got      : '(= (list) (list 1))\nnil'
+TEST: '(= 0 (list))' -> ['',false] -> FAIL (line 365):
+    Expected : '.*\nfalse'
+    Got      : '(= 0 (list))\nnil'
+TEST: '(= (list) 0)' -> ['',false] -> FAIL (line 367):
+    Expected : '.*\nfalse'
+    Got      : '(= (list) 0)\nnil'
+TEST: '(= (list nil) (list))' -> ['',false] -> FAIL (line 369):
+    Expected : '.*\nfalse'
+    Got      : '(= (list nil) (list))\nnil'
+
+----------Testing builtin and user defined functions------------
+
+TEST: '(+ 1 2)' -> ['',3] -> SUCCESS
+TEST: '( (fn* (a b) (+ b a)) 3 4)' -> ['',7] -> SUCCESS
+TEST: '( (fn* () 4) )' -> ['',4] -> SUCCESS
+TEST: '( (fn* (f x) (f x)) (fn* (a) (+ 1 a)) 7)' -> ['',8] -> SUCCESS
+
+------------------------Testing closures------------------------
+
+TEST: '( ( (fn* (a) (fn* (b) (+ a b))) 5) 7)' -> ['',12] -> SUCCESS
+TEST: '(def! gen-plus5 (fn* () (fn* (b) (+ 5 b))))' -> ['',] -> SUCCESS (result ignored)
+TEST: '(def! plus5 (gen-plus5))' -> ['',] -> SUCCESS (result ignored)
+TEST: '(plus5 7)' -> ['',12] -> FAIL (line 397):
+    Expected : '.*\n12'
+    Got      : '(plus5 7)\nplus5 not found\n'
+TEST: '(def! gen-plusX (fn* (x) (fn* (b) (+ x b))))' -> ['',] -> SUCCESS (result ignored)
+TEST: '(def! plus7 (gen-plusX 7))' -> ['',] -> SUCCESS (result ignored)
+TEST: '(plus7 8)' -> ['',15] -> FAIL (line 402):
+    Expected : '.*\n15'
+    Got      : '(plus7 8)\nplus7 not found\n'
+
+------------------------Testing do form-------------------------
+
+TEST: '(do (prn 101))' -> ['101\n',nil] -> FAIL (line 411):
+    Expected : '.*\n101\nnil'
+    Got      : '(do (prn 101))\n#<function>'
+TEST: '(do (prn 102) 7)' -> ['102\n',7] -> FAIL (line 414):
+    Expected : '.*\n102\n7'
+    Got      : '(do (prn 102) 7)\n#<function>'
+TEST: '(do (prn 101) (prn 102) (+ 1 2))' -> ['101\n102\n',3] -> FAIL (line 418):
+    Expected : '.*\n101\n102\n3'
+    Got      : '(do (prn 101) (prn 102) (+ 1 2))\n#<function>'
+TEST: '(do (def! a 6) 7 (+ a 8))' -> ['',14] -> FAIL (line 421):
+    Expected : '.*\n14'
+    Got      : '(do (def! a 6) 7 (+ a 8))\n#<function>'
+TEST: 'a' -> ['',6] -> FAIL (line 423):
+    Expected : '.*\n6'
+    Got      : 'a\n5'
+
+-------------Testing special form case-sensitivity---------------
+
+TEST: '(def! DO (fn* (a) 7))' -> ['',] -> SUCCESS (result ignored)
+TEST: '(DO 3)' -> ['',7] -> FAIL (line 431):
+    Expected : '.*\n7'
+    Got      : '(DO 3)\nDO not found\n'
+
+---------------Testing recursive sumdown function----------------
+
+TEST: '(def! sumdown (fn* (N) (if (> N 0) (+ N (sumdown  (- N 1))) 0)))' -> ['',] -> SUCCESS (result ignored)
+TEST: '(sumdown 1)' -> ['',1] -> FAIL (line 439):
+    Expected : '.*\n1'
+    Got      : '(sumdown 1)\nsumdown not found\n'
+TEST: '(sumdown 2)' -> ['',3] -> FAIL (line 441):
+    Expected : '.*\n3'
+    Got      : '(sumdown 2)\nsumdown not found\n'
+TEST: '(sumdown 6)' -> ['',21] -> FAIL (line 443):
+    Expected : '.*\n21'
+    Got      : '(sumdown 6)\nsumdown not found\n'
+
+---------------Testing recursive fibonacci function--------------
+
+TEST: '(def! fib (fn* (N) (if (= N 0) 1 (if (= N 1) 1 (+ (fib (- N 1)) (fib (- N 2)))))))' -> ['',] -> SUCCESS (result ignored)
+TEST: '(fib 1)' -> ['',1] -> FAIL (line 452):
+    Expected : '.*\n1'
+    Got      : '(fib 1)\nfib not found\n'
+TEST: '(fib 2)' -> ['',2] -> FAIL (line 454):
+    Expected : '.*\n2'
+    Got      : '(fib 2)\nfib not found\n'
+TEST: '(fib 4)' -> ['',5] -> FAIL (line 456):
+    Expected : '.*\n5'
+    Got      : '(fib 4)\nfib not found\n'
+
+-----------Testing recursive function in environment.-------------
+
+TEST: '(let* (cst (fn* (n) (if (= n 0) nil (cst (- n 1))))) (cst 1))' -> ['',nil] -> SUCCESS
+TEST: '(let* (f (fn* (n) (if (= n 0) 0 (g (- n 1)))) g (fn* (n) (f n))) (f 2))' -> ['',0] -> SUCCESS
+------------------------------------------------------------------
+-------------------- Deferrable Functionality --------------------
+------------------------------------------------------------------
+
+----------------------Testing if on strings-----------------------
+
+TEST: '(if "" 7 8)' -> ['',7] -> FAIL (line 479):
+    Expected : '.*\n7'
+    Got      : '(if "" 7 8)\n"" not found\n'
+----------------------Testing string equality---------------------
+TEST: '(= "" "")' -> ['',true] -> FAIL (line 484):
+    Expected : '.*\ntrue'
+    Got      : '(= "" "")\n"" not found\n'
+TEST: '(= "abc" "abc")' -> ['',true] -> FAIL (line 486):
+    Expected : '.*\ntrue'
+    Got      : '(= "abc" "abc")\n"abc" not found\n'
+TEST: '(= "abc" "")' -> ['',false] -> FAIL (line 488):
+    Expected : '.*\nfalse'
+    Got      : '(= "abc" "")\n"abc" not found\n'
+TEST: '(= "" "abc")' -> ['',false] -> FAIL (line 490):
+    Expected : '.*\nfalse'
+    Got      : '(= "" "abc")\n"" not found\n'
+TEST: '(= "abc" "def")' -> ['',false] -> FAIL (line 492):
+    Expected : '.*\nfalse'
+    Got      : '(= "abc" "def")\n"abc" not found\n'
+TEST: '(= "abc" "ABC")' -> ['',false] -> FAIL (line 494):
+    Expected : '.*\nfalse'
+    Got      : '(= "abc" "ABC")\n"abc" not found\n'
+TEST: '(= (list) "")' -> ['',false] -> FAIL (line 496):
+    Expected : '.*\nfalse'
+    Got      : '(= (list) "")\n"" not found\n'
+TEST: '(= "" (list))' -> ['',false] -> FAIL (line 498):
+    Expected : '.*\nfalse'
+    Got      : '(= "" (list))\n"" not found\n'
+ (fn* (& more) (count more)) 1 2 3)
+ (fn* (& more) (list? more)) 1 2 3)
+ (fn* (& more) (count more)) 1)
+ (fn* (& more) (count more)) )
+ (fn* (& more) (list? more)) )
+ (fn* (a & more) (count more)) 1 2 3)
+ (fn* (a & more) (count more)) 1)
+ (fn* (a & more) (list? more)) 1)
+
+--------------Testing language defined not function---------------
+
+TEST: '(not false)' -> ['',true] -> FAIL (line 527):
+    Expected : '.*\ntrue'
+    Got      : '(not false)\nnot not found\n'
+TEST: '(not nil)' -> ['',true] -> FAIL (line 529):
+    Expected : '.*\ntrue'
+    Got      : '(not nil)\nnot not found\n'
+TEST: '(not true)' -> ['',false] -> FAIL (line 531):
+    Expected : '.*\nfalse'
+    Got      : '(not true)\nnot not found\n'
+TEST: '(not "a")' -> ['',false] -> FAIL (line 533):
+    Expected : '.*\nfalse'
+    Got      : '(not "a")\nnot not found\n'
+TEST: '(not 0)' -> ['',false] -> FAIL (line 535):
+    Expected : '.*\nfalse'
+    Got      : '(not 0)\nnot not found\n'
+------------------------------------------------------------------
+
+----------------------Testing string quoting----------------------
+
+TEST: '""' -> ['',""] -> SUCCESS
+TEST: '"abc"' -> ['',"abc"] -> SUCCESS
+TEST: '"abc  def"' -> ['',"abc  def"] -> SUCCESS
+TEST: '"\\""' -> ['',"\""] -> SUCCESS
+TEST: '"abc\\ndef\\nghi"' -> ['',"abc\ndef\nghi"] -> SUCCESS
+TEST: '"abc\\\\def\\\\ghi"' -> ['',"abc\\def\\ghi"] -> SUCCESS
+TEST: '"\\\\n"' -> ['',"\\n"] -> SUCCESS
+
+---------------------------Testing pr-str--------------------------
+
+TEST: '(pr-str)' -> ['',""] -> FAIL (line 571):
+    Expected : '.*\n\\"\\"'
+    Got      : '(pr-str)\npr-str not found\n'
+TEST: '(pr-str "")' -> ['',"\"\""] -> FAIL (line 574):
+    Expected : '.*\n\\"\\\\\\"\\\\\\"\\"'
+    Got      : '(pr-str "")\npr-str not found\n'
+TEST: '(pr-str "abc")' -> ['',"\"abc\""] -> FAIL (line 577):
+    Expected : '.*\n\\"\\\\\\"abc\\\\\\"\\"'
+    Got      : '(pr-str "abc")\npr-str not found\n'
+TEST: '(pr-str "abc  def" "ghi jkl")' -> ['',"\"abc  def\" \"ghi jkl\""] -> FAIL (line 580):
+    Expected : '.*\n\\"\\\\\\"abc\\ \\ def\\\\\\"\\ \\\\\\"ghi\\ jkl\\\\\\"\\"'
+    Got      : '(pr-str "abc  def" "ghi jkl")\npr-str not found\n'
+TEST: '(pr-str "\\"")' -> ['',"\"\\\"\""] -> FAIL (line 583):
+    Expected : '.*\n\\"\\\\\\"\\\\\\\\\\\\\\"\\\\\\"\\"'
+    Got      : '(pr-str "\\"")\npr-str not found\n'
+TEST: '(pr-str (list 1 2 "abc" "\\"") "def")' -> ['',"(1 2 \"abc\" \"\\\"\") \"def\""] -> FAIL (line 586):
+    Expected : '.*\n\\"\\(1\\ 2\\ \\\\\\"abc\\\\\\"\\ \\\\\\"\\\\\\\\\\\\\\"\\\\\\"\\)\\ \\\\\\"def\\\\\\"\\"'
+    Got      : '(pr-str (list 1 2 "abc" "\\"") "def")\npr-str not found\n'
+TEST: '(pr-str "abc\\ndef\\nghi")' -> ['',"\"abc\\ndef\\nghi\""] -> FAIL (line 589):
+    Expected : '.*\n\\"\\\\\\"abc\\\\\\\\ndef\\\\\\\\nghi\\\\\\"\\"'
+    Got      : '(pr-str "abc\\ndef\\nghi")\npr-str not found\n'
+TEST: '(pr-str "abc\\\\def\\\\ghi")' -> ['',"\"abc\\\\def\\\\ghi\""] -> FAIL (line 592):
+    Expected : '.*\n\\"\\\\\\"abc\\\\\\\\\\\\\\\\def\\\\\\\\\\\\\\\\ghi\\\\\\"\\"'
+    Got      : '(pr-str "abc\\\\def\\\\ghi")\npr-str not found\n'
+TEST: '(pr-str (list))' -> ['',"()"] -> FAIL (line 595):
+    Expected : '.*\n\\"\\(\\)\\"'
+    Got      : '(pr-str (list))\npr-str not found\n'
+
+---------------------------Testing str----------------------------
+
+TEST: '(str)' -> ['',""] -> FAIL (line 603):
+    Expected : '.*\n\\"\\"'
+    Got      : '(str)\nstr not found\n'
+TEST: '(str "")' -> ['',""] -> FAIL (line 606):
+    Expected : '.*\n\\"\\"'
+    Got      : '(str "")\nstr not found\n'
+TEST: '(str "abc")' -> ['',"abc"] -> FAIL (line 609):
+    Expected : '.*\n\\"abc\\"'
+    Got      : '(str "abc")\nstr not found\n'
+TEST: '(str "\\"")' -> ['',"\""] -> FAIL (line 612):
+    Expected : '.*\n\\"\\\\\\"\\"'
+    Got      : '(str "\\"")\nstr not found\n'
+TEST: '(str 1 "abc" 3)' -> ['',"1abc3"] -> FAIL (line 615):
+    Expected : '.*\n\\"1abc3\\"'
+    Got      : '(str 1 "abc" 3)\nstr not found\n'
+TEST: '(str "abc  def" "ghi jkl")' -> ['',"abc  defghi jkl"] -> FAIL (line 618):
+    Expected : '.*\n\\"abc\\ \\ defghi\\ jkl\\"'
+    Got      : '(str "abc  def" "ghi jkl")\nstr not found\n'
+TEST: '(str "abc\\ndef\\nghi")' -> ['',"abc\ndef\nghi"] -> FAIL (line 621):
+    Expected : '.*\n\\"abc\\\\ndef\\\\nghi\\"'
+    Got      : '(str "abc\\ndef\\nghi")\nstr not found\n'
+TEST: '(str "abc\\\\def\\\\ghi")' -> ['',"abc\\def\\ghi"] -> FAIL (line 624):
+    Expected : '.*\n\\"abc\\\\\\\\def\\\\\\\\ghi\\"'
+    Got      : '(str "abc\\\\def\\\\ghi")\nstr not found\n'
+TEST: '(str (list 1 2 "abc" "\\"") "def")' -> ['',"(1 2 abc \")def"] -> FAIL (line 627):
+    Expected : '.*\n\\"\\(1\\ 2\\ abc\\ \\\\\\"\\)def\\"'
+    Got      : '(str (list 1 2 "abc" "\\"") "def")\nstr not found\n'
+TEST: '(str (list))' -> ['',"()"] -> FAIL (line 630):
+    Expected : '.*\n\\"\\(\\)\\"'
+    Got      : '(str (list))\nstr not found\n'
+
+prn)
+
+prn "")
+
+prn "abc")
+
+prn "abc  def" "ghi jkl")
+
+prn "\"")
+
+prn "abc\ndef\nghi")
+
+prn "abc\\def\\ghi")
+il
+
+prn (list 1 2 "abc" "\"") "def")
+
+
+-------------------------Testing println--------------------------
+
+TEST: '(println)' -> ['\n',nil] -> FAIL (line 675):
+    Expected : '.*\n\nnil'
+    Got      : '(println)\nprintln not found\n'
+TEST: '(println "")' -> ['\n',nil] -> FAIL (line 679):
+    Expected : '.*\n\nnil'
+    Got      : '(println "")\nprintln not found\n'
+TEST: '(println "abc")' -> ['abc\n',nil] -> FAIL (line 683):
+    Expected : '.*\nabc\nnil'
+    Got      : '(println "abc")\nprintln not found\n'
+TEST: '(println "abc  def" "ghi jkl")' -> ['abc  def ghi jkl',] -> FAIL (line 686):
+    Expected : '.*\nabc  def ghi jkl'
+    Got      : '(println "abc  def" "ghi jkl")\nprintln not found\n'
+TEST: '(println "\\"")' -> ['"\n',nil] -> FAIL (line 690):
+    Expected : '.*\n"\nnil'
+    Got      : '(println "\\"")\nprintln not found\n'
+TEST: '(println "abc\\ndef\\nghi")' -> ['abc\ndef\nghi\n',nil] -> FAIL (line 696):
+    Expected : '.*\nabc\ndef\nghi\nnil'
+    Got      : '(println "abc\\ndef\\nghi")\nprintln not found\n'
+TEST: '(println "abc\\\\def\\\\ghi")' -> ['abc\\\\def\\\\ghi\n',nil] -> FAIL (line 700):
+    Expected : '.*\nabc\\\\def\\\\ghi\nnil'
+    Got      : '(println "abc\\\\def\\\\ghi")\nprintln not found\n'
+TEST: '(println (list 1 2 "abc" "\\"") "def")' -> ['\\(1 2 abc "\\) def\n',nil] -> FAIL (line 704):
+    Expected : '.*\n\\(1 2 abc "\\) def\nnil'
+    Got      : '(println (list 1 2 "abc" "\\"") "def")\nprintln not found\n'
+
+-------------------------Testing keywords-------------------------
+
+TEST: '(= :abc :abc)' -> ['',true] -> FAIL (line 712):
+    Expected : '.*\ntrue'
+    Got      : '(= :abc :abc)\n:abc not found\n'
+TEST: '(= :abc :def)' -> ['',false] -> FAIL (line 714):
+    Expected : '.*\nfalse'
+    Got      : '(= :abc :def)\n:abc not found\n'
+TEST: '(= :abc ":abc")' -> ['',false] -> FAIL (line 716):
+    Expected : '.*\nfalse'
+    Got      : '(= :abc ":abc")\n:abc not found\n'
+TEST: '(= (list :abc) (list :abc))' -> ['',true] -> FAIL (line 718):
+    Expected : '.*\ntrue'
+    Got      : '(= (list :abc) (list :abc))\n:abc not found\n'
+
+FAILURES:
+FAILED TEST (line 274): (= (list) nil) -> ['',false]:
+    Expected : '.*\nfalse'
+    Got      : '(= (list) nil)\nnil'
+FAILED TEST (line 296): (= 2 1) -> ['',false]:
+    Expected : '.*\nfalse'
+    Got      : '(= 2 1)\nnil'
+FAILED TEST (line 300): (= 1 2) -> ['',false]:
+    Expected : '.*\nfalse'
+    Got      : '(= 1 2)\nnil'
+FAILED TEST (line 302): (= 1 (+ 1 1)) -> ['',false]:
+    Expected : '.*\nfalse'
+    Got      : '(= 1 (+ 1 1))\nnil'
+FAILED TEST (line 306): (= nil 1) -> ['',false]:
+    Expected : '.*\nfalse'
+    Got      : '(= nil 1)\nnil'
+FAILED TEST (line 348): (= 1 0) -> ['',false]:
+    Expected : '.*\nfalse'
+    Got      : '(= 1 0)\nnil'
+FAILED TEST (line 350): (= true true) -> ['',true]:
+    Expected : '.*\ntrue'
+    Got      : '(= true true)\nnil'
+FAILED TEST (line 352): (= false false) -> ['',true]:
+    Expected : '.*\ntrue'
+    Got      : '(= false false)\nnil'
+FAILED TEST (line 361): (= (list 1) (list)) -> ['',false]:
+    Expected : '.*\nfalse'
+    Got      : '(= (list 1) (list))\nnil'
+FAILED TEST (line 363): (= (list) (list 1)) -> ['',false]:
+    Expected : '.*\nfalse'
+    Got      : '(= (list) (list 1))\nnil'
+FAILED TEST (line 365): (= 0 (list)) -> ['',false]:
+    Expected : '.*\nfalse'
+    Got      : '(= 0 (list))\nnil'
+FAILED TEST (line 367): (= (list) 0) -> ['',false]:
+    Expected : '.*\nfalse'
+    Got      : '(= (list) 0)\nnil'
+FAILED TEST (line 369): (= (list nil) (list)) -> ['',false]:
+    Expected : '.*\nfalse'
+    Got      : '(= (list nil) (list))\nnil'
+FAILED TEST (line 397): (plus5 7) -> ['',12]:
+    Expected : '.*\n12'
+    Got      : '(plus5 7)\nplus5 not found\n'
+FAILED TEST (line 402): (plus7 8) -> ['',15]:
+    Expected : '.*\n15'
+    Got      : '(plus7 8)\nplus7 not found\n'
+FAILED TEST (line 411): (do (prn 101)) -> ['101\n',nil]:
+    Expected : '.*\n101\nnil'
+    Got      : '(do (prn 101))\n#<function>'
+FAILED TEST (line 414): (do (prn 102) 7) -> ['102\n',7]:
+    Expected : '.*\n102\n7'
+    Got      : '(do (prn 102) 7)\n#<function>'
+FAILED TEST (line 418): (do (prn 101) (prn 102) (+ 1 2)) -> ['101\n102\n',3]:
+    Expected : '.*\n101\n102\n3'
+    Got      : '(do (prn 101) (prn 102) (+ 1 2))\n#<function>'
+FAILED TEST (line 421): (do (def! a 6) 7 (+ a 8)) -> ['',14]:
+    Expected : '.*\n14'
+    Got      : '(do (def! a 6) 7 (+ a 8))\n#<function>'
+FAILED TEST (line 423): a -> ['',6]:
+    Expected : '.*\n6'
+    Got      : 'a\n5'
+FAILED TEST (line 431): (DO 3) -> ['',7]:
+    Expected : '.*\n7'
+    Got      : '(DO 3)\nDO not found\n'
+FAILED TEST (line 439): (sumdown 1) -> ['',1]:
+    Expected : '.*\n1'
+    Got      : '(sumdown 1)\nsumdown not found\n'
+FAILED TEST (line 441): (sumdown 2) -> ['',3]:
+    Expected : '.*\n3'
+    Got      : '(sumdown 2)\nsumdown not found\n'
+FAILED TEST (line 443): (sumdown 6) -> ['',21]:
+    Expected : '.*\n21'
+    Got      : '(sumdown 6)\nsumdown not found\n'
+FAILED TEST (line 452): (fib 1) -> ['',1]:
+    Expected : '.*\n1'
+    Got      : '(fib 1)\nfib not found\n'
+FAILED TEST (line 454): (fib 2) -> ['',2]:
+    Expected : '.*\n2'
+    Got      : '(fib 2)\nfib not found\n'
+FAILED TEST (line 456): (fib 4) -> ['',5]:
+    Expected : '.*\n5'
+    Got      : '(fib 4)\nfib not found\n'
+FAILED TEST (line 479): (if "" 7 8) -> ['',7]:
+    Expected : '.*\n7'
+    Got      : '(if "" 7 8)\n"" not found\n'
+FAILED TEST (line 484): (= "" "") -> ['',true]:
+    Expected : '.*\ntrue'
+    Got      : '(= "" "")\n"" not found\n'
+FAILED TEST (line 486): (= "abc" "abc") -> ['',true]:
+    Expected : '.*\ntrue'
+    Got      : '(= "abc" "abc")\n"abc" not found\n'
+FAILED TEST (line 488): (= "abc" "") -> ['',false]:
+    Expected : '.*\nfalse'
+    Got      : '(= "abc" "")\n"abc" not found\n'
+FAILED TEST (line 490): (= "" "abc") -> ['',false]:
+    Expected : '.*\nfalse'
+    Got      : '(= "" "abc")\n"" not found\n'
+FAILED TEST (line 492): (= "abc" "def") -> ['',false]:
+    Expected : '.*\nfalse'
+    Got      : '(= "abc" "def")\n"abc" not found\n'
+FAILED TEST (line 494): (= "abc" "ABC") -> ['',false]:
+    Expected : '.*\nfalse'
+    Got      : '(= "abc" "ABC")\n"abc" not found\n'
+FAILED TEST (line 496): (= (list) "") -> ['',false]:
+    Expected : '.*\nfalse'
+    Got      : '(= (list) "")\n"" not found\n'
+FAILED TEST (line 498): (= "" (list)) -> ['',false]:
+    Expected : '.*\nfalse'
+    Got      : '(= "" (list))\n"" not found\n'
+FAILED TEST (line 527): (not false) -> ['',true]:
+    Expected : '.*\ntrue'
+    Got      : '(not false)\nnot not found\n'
+FAILED TEST (line 529): (not nil) -> ['',true]:
+    Expected : '.*\ntrue'
+    Got      : '(not nil)\nnot not found\n'
+FAILED TEST (line 531): (not true) -> ['',false]:
+    Expected : '.*\nfalse'
+    Got      : '(not true)\nnot not found\n'
+FAILED TEST (line 533): (not "a") -> ['',false]:
+    Expected : '.*\nfalse'
+    Got      : '(not "a")\nnot not found\n'
+FAILED TEST (line 535): (not 0) -> ['',false]:
+    Expected : '.*\nfalse'
+    Got      : '(not 0)\nnot not found\n'
+FAILED TEST (line 571): (pr-str) -> ['',""]:
+    Expected : '.*\n\\"\\"'
+    Got      : '(pr-str)\npr-str not found\n'
+FAILED TEST (line 574): (pr-str "") -> ['',"\"\""]:
+    Expected : '.*\n\\"\\\\\\"\\\\\\"\\"'
+    Got      : '(pr-str "")\npr-str not found\n'
+FAILED TEST (line 577): (pr-str "abc") -> ['',"\"abc\""]:
+    Expected : '.*\n\\"\\\\\\"abc\\\\\\"\\"'
+    Got      : '(pr-str "abc")\npr-str not found\n'
+FAILED TEST (line 580): (pr-str "abc  def" "ghi jkl") -> ['',"\"abc  def\" \"ghi jkl\""]:
+    Expected : '.*\n\\"\\\\\\"abc\\ \\ def\\\\\\"\\ \\\\\\"ghi\\ jkl\\\\\\"\\"'
+    Got      : '(pr-str "abc  def" "ghi jkl")\npr-str not found\n'
+FAILED TEST (line 583): (pr-str "\"") -> ['',"\"\\\"\""]:
+    Expected : '.*\n\\"\\\\\\"\\\\\\\\\\\\\\"\\\\\\"\\"'
+    Got      : '(pr-str "\\"")\npr-str not found\n'
+FAILED TEST (line 586): (pr-str (list 1 2 "abc" "\"") "def") -> ['',"(1 2 \"abc\" \"\\\"\") \"def\""]:
+    Expected : '.*\n\\"\\(1\\ 2\\ \\\\\\"abc\\\\\\"\\ \\\\\\"\\\\\\\\\\\\\\"\\\\\\"\\)\\ \\\\\\"def\\\\\\"\\"'
+    Got      : '(pr-str (list 1 2 "abc" "\\"") "def")\npr-str not found\n'
+FAILED TEST (line 589): (pr-str "abc\ndef\nghi") -> ['',"\"abc\\ndef\\nghi\""]:
+    Expected : '.*\n\\"\\\\\\"abc\\\\\\\\ndef\\\\\\\\nghi\\\\\\"\\"'
+    Got      : '(pr-str "abc\\ndef\\nghi")\npr-str not found\n'
+FAILED TEST (line 592): (pr-str "abc\\def\\ghi") -> ['',"\"abc\\\\def\\\\ghi\""]:
+    Expected : '.*\n\\"\\\\\\"abc\\\\\\\\\\\\\\\\def\\\\\\\\\\\\\\\\ghi\\\\\\"\\"'
+    Got      : '(pr-str "abc\\\\def\\\\ghi")\npr-str not found\n'
+FAILED TEST (line 595): (pr-str (list)) -> ['',"()"]:
+    Expected : '.*\n\\"\\(\\)\\"'
+    Got      : '(pr-str (list))\npr-str not found\n'
+FAILED TEST (line 603): (str) -> ['',""]:
+    Expected : '.*\n\\"\\"'
+    Got      : '(str)\nstr not found\n'
+FAILED TEST (line 606): (str "") -> ['',""]:
+    Expected : '.*\n\\"\\"'
+    Got      : '(str "")\nstr not found\n'
+FAILED TEST (line 609): (str "abc") -> ['',"abc"]:
+    Expected : '.*\n\\"abc\\"'
+    Got      : '(str "abc")\nstr not found\n'
+FAILED TEST (line 612): (str "\"") -> ['',"\""]:
+    Expected : '.*\n\\"\\\\\\"\\"'
+    Got      : '(str "\\"")\nstr not found\n'
+FAILED TEST (line 615): (str 1 "abc" 3) -> ['',"1abc3"]:
+    Expected : '.*\n\\"1abc3\\"'
+    Got      : '(str 1 "abc" 3)\nstr not found\n'
+FAILED TEST (line 618): (str "abc  def" "ghi jkl") -> ['',"abc  defghi jkl"]:
+    Expected : '.*\n\\"abc\\ \\ defghi\\ jkl\\"'
+    Got      : '(str "abc  def" "ghi jkl")\nstr not found\n'
+FAILED TEST (line 621): (str "abc\ndef\nghi") -> ['',"abc\ndef\nghi"]:
+    Expected : '.*\n\\"abc\\\\ndef\\\\nghi\\"'
+    Got      : '(str "abc\\ndef\\nghi")\nstr not found\n'
+FAILED TEST (line 624): (str "abc\\def\\ghi") -> ['',"abc\\def\\ghi"]:
+    Expected : '.*\n\\"abc\\\\\\\\def\\\\\\\\ghi\\"'
+    Got      : '(str "abc\\\\def\\\\ghi")\nstr not found\n'
+FAILED TEST (line 627): (str (list 1 2 "abc" "\"") "def") -> ['',"(1 2 abc \")def"]:
+    Expected : '.*\n\\"\\(1\\ 2\\ abc\\ \\\\\\"\\)def\\"'
+    Got      : '(str (list 1 2 "abc" "\\"") "def")\nstr not found\n'
+FAILED TEST (line 630): (str (list)) -> ['',"()"]:
+    Expected : '.*\n\\"\\(\\)\\"'
+    Got      : '(str (list))\nstr not found\n'
+FAILED TEST (line 675): (println) -> ['\n',nil]:
+    Expected : '.*\n\nnil'
+    Got      : '(println)\nprintln not found\n'
+FAILED TEST (line 679): (println "") -> ['\n',nil]:
+    Expected : '.*\n\nnil'
+    Got      : '(println "")\nprintln not found\n'
+FAILED TEST (line 683): (println "abc") -> ['abc\n',nil]:
+    Expected : '.*\nabc\nnil'
+    Got      : '(println "abc")\nprintln not found\n'
+FAILED TEST (line 686): (println "abc  def" "ghi jkl") -> ['abc  def ghi jkl',]:
+    Expected : '.*\nabc  def ghi jkl'
+    Got      : '(println "abc  def" "ghi jkl")\nprintln not found\n'
+FAILED TEST (line 690): (println "\"") -> ['"\n',nil]:
+    Expected : '.*\n"\nnil'
+    Got      : '(println "\\"")\nprintln not found\n'
+FAILED TEST (line 696): (println "abc\ndef\nghi") -> ['abc\ndef\nghi\n',nil]:
+    Expected : '.*\nabc\ndef\nghi\nnil'
+    Got      : '(println "abc\\ndef\\nghi")\nprintln not found\n'
+FAILED TEST (line 700): (println "abc\\def\\ghi") -> ['abc\\\\def\\\\ghi\n',nil]:
+    Expected : '.*\nabc\\\\def\\\\ghi\nnil'
+    Got      : '(println "abc\\\\def\\\\ghi")\nprintln not found\n'
+FAILED TEST (line 704): (println (list 1 2 "abc" "\"") "def") -> ['\\(1 2 abc "\\) def\n',nil]:
+    Expected : '.*\n\\(1 2 abc "\\) def\nnil'
+    Got      : '(println (list 1 2 "abc" "\\"") "def")\nprintln not found\n'
+FAILED TEST (line 712): (= :abc :abc) -> ['',true]:
+    Expected : '.*\ntrue'
+    Got      : '(= :abc :abc)\n:abc not found\n'
+FAILED TEST (line 714): (= :abc :def) -> ['',false]:
+    Expected : '.*\nfalse'
+    Got      : '(= :abc :def)\n:abc not found\n'
+FAILED TEST (line 716): (= :abc ":abc") -> ['',false]:
+    Expected : '.*\nfalse'
+    Got      : '(= :abc ":abc")\n:abc not found\n'
+FAILED TEST (line 718): (= (list :abc) (list :abc)) -> ['',true]:
+    Expected : '.*\ntrue'
+    Got      : '(= (list :abc) (list :abc))\n:abc not found\n'
+
+TEST RESULTS (for ../tests/tests_master.txt):
+    0: soft failing tests
+   72: failing tests
+  124: passing tests
+  196: total tests
+
