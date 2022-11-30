@@ -1,9 +1,9 @@
 ;; -----------------------------------------------------
 
-    ;; TESTING IF
-    ;; (if exp1 expT expF) 
-    ;; Depending on the result of exp1 either expT or expF is evaluated and returned. 
-    ;; If exp1 is () then expF is evaluated, otherwise, expT is evaluated.
+;; TESTING IF
+;; (if exp1 expT expF) 
+;; Depending on the result of exp1 either expT or expF is evaluated and returned. 
+;; If exp1 is () then expF is evaluated, otherwise, expT is evaluated.
 
 (if (= 1 1) true false)
 ;=>true
@@ -26,10 +26,10 @@
 (if true (if true (+ 1 1) (+ 2 2)) false)
 ;=>2
 
-    ;; TESTING COND
-    ;; (cond t1 r1 t2 r2 t3 r3)
-    ;; if t1 is true returns r1...if t2 is true return r2...
-    ;; if no tn is true, return nil
+;; TESTING COND
+;; (cond t1 r1 t2 r2 t3 r3)
+;; if t1 is true returns r1...if t2 is true return r2...
+;; if no tn is true, return nil
 
 (cond true 1 true 2 true 3)
 ;=>1
@@ -55,31 +55,31 @@
 (cond false (cond true 1 false 2) true (cond false 3 true 4))
 ;=>4
 
-    ;; TESTING SET
-    ;; (set name exp)
-    ;; The symbol name is associated with the value of exp
+;; TESTING SET
+;; (set name exp)
+;; The symbol name is associated with the value of exp
 
 (set a 5)
-(a)
+a
 ;=>5
 
 (set a 6)
-(a)
+a
 ;=>6
 
-(set b (+ 2 (* 4 5)))
-(b)
+(set b (+ 2 (* 4 5))) 
+b
 ;=>22
 
-    ;; TESTING ARITHMETIC
-    ;; (+ expr1 epr2)
-    ;; Returns the sum of expressions. The expressions must be numbers
-    ;; (+ expr1 epr2)
-    ;; Returns the difference of expressions. The expressions must be numbers
-    ;; (* expr1 epr2)
-    ;; Returns the product of expressions. The expressions must be numbers
-    ;; (/ expr1 epr2)
-    ;; Returns the quotient. The expressions must be numbers
+;; TESTING ARITHMETIC
+;; (+ expr1 epr2)
+;; Returns the sum of expressions. The expressions must be numbers
+;; (+ expr1 epr2)
+;; Returns the difference of expressions. The expressions must be numbers
+;; (* expr1 epr2)
+;; Returns the product of expressions. The expressions must be numbers
+;; (/ expr1 epr2)
+;; Returns the quotient. The expressions must be numbers
 
 (+ 1 2)
 ;=>3
@@ -102,9 +102,9 @@
 (/ (- (+ 515 (* -87 311)) 296) 27)
 ;=>-994
 
-    ;; TESTING EQUALITY
-    ;; (= expr1 expr2)
-    ;; Compares the values of two atoms or (). Returns () when either expression is a larger list.
+;; TESTING EQUALITY
+;; (= expr1 expr2)
+;; Compares the values of two atoms or (). Returns () when either expression is a larger list.
 
 (= nil nil)
 ;=>true
@@ -130,11 +130,11 @@
 (= 1 (list 1 2 3))
 ;=>nil
 
-    ;; TESTING INEQUALITY
-    ;; (< expr1 expr2)
-    ;; Return t when expr1 is less than expr2. Expr1 and expr2 must be numbers.
-    ;; (> expr1 expr2)
-    ;; Return t when expr1 is greater than expr2. Expr1 and expr2 must be numbers.
+;; --------------------------------------TESTING INEQUALITY-------------------------------------------
+;;                                          (< expr1 expr2)
+;;                 Return t when expr1 is less than expr2. Expr1 and expr2 must be numbers.
+;;                                          (> expr1 expr2)
+;;                 Return t when expr1 is greater than expr2. Expr1 and expr2 must be numbers.
 
 (< 2 3)
 ;=>true
@@ -154,21 +154,23 @@
 (> 4 3)
 ;=>true
 
-    ;; TESTING CONS
-    ;; (cons expr1 expr2)
-    ;; Create a cons cell with expr1 as car and expr2 and cdr: ie: (exp1 . expr2)
+;; -----------------------------------------------------------------------------------------------------
 
-    ;; TESTING CAR
-    ;; (car expr)
-    ;; Expr should be a non empty list. Car returns the car cell of the first cons cell
+;; TESTING CONS
+;; (cons expr1 expr2)
+;; Create a cons cell with expr1 as car and expr2 and cdr: ie: (exp1 . expr2)
 
-    ;; TESTING CDR
-    ;; (cdr expr)
-    ;; Expr should be a non empty list. Cdr returns the cdr cell of the first cons cell
+;; TESTING CAR
+;; (car expr)
+;; Expr should be a non empty list. Car returns the car cell of the first cons cell
 
-    ;; TESTING NUMBER?
-    ;; (number? Expr)
-    ;; Returns T if the expr is numeric, () otherwise
+;; TESTING CDR
+;; (cdr expr)
+;; Expr should be a non empty list. Cdr returns the cdr cell of the first cons cell
+
+;; TESTING NUMBER?
+;; (number? Expr)
+;; Returns T if the expr is numeric, () otherwise
 
 (number? 1)
 ;=>true
@@ -185,9 +187,9 @@
 (number? true)
 ;=>nil
 
-    ;; TESTING SYMBOL?
-    ;; (symbol? Expr)
-    ;; Returns T if the expr is a name, () otherwise
+;; TESTING SYMBOL?
+;; (symbol? Expr)
+;; Returns T if the expr is a name, () otherwise
 
 (symbol? 5)
 ;=>false
