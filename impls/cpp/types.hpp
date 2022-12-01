@@ -249,7 +249,7 @@ public:
     virtual Type type() const override {return Type::Nothing;}
 
     virtual string inspect(bool) const override {
-        return "";
+        return {};
     }
 private:
     NothingValue() { }

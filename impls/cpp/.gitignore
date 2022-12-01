@@ -20,6 +20,7 @@ node_modules
 logs
 old
 tmp/
+*.exe
 
 #DO THIS
 history.txt
