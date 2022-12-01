@@ -91,7 +91,6 @@ struct Tokenizer {
                         return view.substr(start, m_index - start);
                     }
 
-                    //numbers
                     case '-':
                     case '1':
                     case '2':

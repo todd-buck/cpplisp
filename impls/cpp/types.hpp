@@ -16,8 +16,7 @@ class ExceptionValue;
 class TrueValue;
 class FalseValue;
 class NilValue;
-class StringValue;
-class KeywordValue;
+class NothingValue;
 
 class Value {
 public:
@@ -30,13 +29,11 @@ public:
         True,
         False,
         Nil,
-        String,
-        Keyword,
+        Nothing // added
     };
 
     virtual Type type() const = 0;
     virtual string inspect(bool print_readably = false) const = 0;
-
     virtual bool is_symbol() const {return false;}
     virtual bool is_nil() const { return false; }
     virtual bool is_false() const { return false; }
@@ -44,9 +41,8 @@ public:
     virtual bool is_truthy() const { return true; }
     virtual bool is_list() const { return false; }
     virtual bool is_integer() const { return false; }
-    virtual bool is_exception() const { return false; }
-    virtual bool is_string() const { return false; }
-    virtual bool is_keyword() const { return false; }
+    virtual bool is_exception() const { return false; } // added
+    virtual bool is_nothing() const { return false; } // added
 
     virtual bool operator==(const Value *other) const { return this == other; }
     bool operator!=(const Value *other) const { return !(*this == other); }
@@ -59,20 +55,18 @@ public:
     TrueValue *as_true();
     FalseValue *as_false();
     NilValue *as_nil();
-    StringValue *as_string();
-    KeywordValue *as_keyword();
+    NothingValue *as_nothing(); // added
 
-    const ListValue *as_list() const;
-    const SymbolValue *as_symbol() const;
-    const IntegerValue *as_integer() const;
-    const FunctionValue *as_function() const;
-    const ExceptionValue *as_exception() const;
-    const TrueValue *as_true() const;
-    const FalseValue *as_false() const;
-    const NilValue *as_nil() const;
-    const StringValue *as_string() const;
-    const KeywordValue *as_keyword() const;
-    
+    ListValue *as_list() const;
+    SymbolValue *as_symbol()  const;
+    IntegerValue *as_integer()  const;
+    FunctionValue *as_function()  const;
+    ExceptionValue *as_exception()  const;
+    TrueValue *as_true()  const;
+    FalseValue *as_false()  const;
+    NilValue *as_nil()  const;
+    NothingValue *as_nothing()  const; // added
+
 };
 
 //stores list in vectors
@@ -90,6 +84,7 @@ public:
 
     virtual bool operator==(const Value *) const override;
 
+    auto pop_front() {return m_list.erase(m_list.begin());}
     auto begin() {return m_list.begin();}
     auto end() {return m_list.end();}
 
@@ -137,6 +132,7 @@ private:
     string m_str;
 };
 
+// change to NumberValue in implemetation // FIXME
 class IntegerValue : public Value {
 public:
     IntegerValue(long l) : m_long{l} {}
@@ -154,6 +150,14 @@ public:
     }
 
     long to_long() { return m_long; }
+
+    virtual Type type() const override {return Type::Integer;}
+
+    virtual bool is_integer() const override { return true; }
+
+    virtual string inspect(bool) const override {
+        return to_string(m_long);
+    }
 
 private:
     long m_long{0};
@@ -271,46 +275,22 @@ private:
     static inline NilValue *s_instance { nullptr };
 };
 
-class StringValue : public Value {
+class NothingValue : public Value {
 public:
-    StringValue(string_view str)
-        : m_str { str } { }
-
-    string str() const { return m_str; }
-
-    virtual Type type() const override { return Type::String; }
-    virtual bool is_string() const override { return true; }
-
-    bool operator==(const Value *other) const override {
-        return other->is_string() && other->as_string()->m_str == m_str;
+    static NothingValue *the() {
+        if (!s_instance)
+            s_instance = new NothingValue;
+        return s_instance;
     }
-
-    virtual string inspect(bool print_readably = false) const override;
-
-private:
-    string m_str;
-};
-
-class KeywordValue : public Value {
-public:
-    KeywordValue(string_view str)
-        : m_str { str } { }
-
-    string str() const { return m_str; }
-
-    virtual Type type() const override { return Type::Keyword; }
-    virtual bool is_keyword() const override { return true; }
-
-    bool operator==(const Value *other) const override {
-        return other->is_keyword() && other->as_keyword()->m_str == m_str;
-    }
+    virtual Type type() const override {return Type::Nothing;}
 
     virtual string inspect(bool) const override {
-        return m_str;
+        return {};
     }
-
 private:
-    string m_str;
+    NothingValue() { }
+
+    static inline NothingValue *s_instance { nullptr };
 };
 
 struct EnvHash {

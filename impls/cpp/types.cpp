@@ -42,64 +42,9 @@ NilValue *Value::as_nil() {
     return static_cast<NilValue*>(this);
 }
 
-StringValue *Value::as_string() {
-    assert(type() == Type::String);
-    return static_cast<StringValue *>(this);
-}
-
-KeywordValue *Value::as_keyword() {
-    assert(type() == Type::Keyword);
-    return static_cast<KeywordValue *>(this);
-}
-
-const ListValue *Value::as_list() const {
-    assert(type() == Type::List);
-    return static_cast<const ListValue *>(this);
-}
-
-const SymbolValue *Value::as_symbol() const {
-    assert(type() == Type::Symbol);
-    return static_cast<const SymbolValue *>(this);
-}
-
-const IntegerValue *Value::as_integer() const {
-    assert(type() == Type::Integer);
-    return static_cast<const IntegerValue *>(this);
-}
-
-const FunctionValue *Value::as_function() const {
-    assert(type() == Type::Function);
-    return static_cast<const FunctionValue *>(this);
-}
-
-const ExceptionValue *Value::as_exception() const {
-    assert(type() == Type::Exception);
-    return static_cast<const ExceptionValue *>(this);
-}
-
-const TrueValue *Value::as_true() const {
-    assert(type() == Type::True);
-    return static_cast<const TrueValue *>(this);
-}
-
-const FalseValue *Value::as_false() const {
-    assert(type() == Type::False);
-    return static_cast<const FalseValue *>(this);
-}
-
-const NilValue *Value::as_nil() const {
-    assert(type() == Type::Nil);
-    return static_cast<const NilValue *>(this);
-}
-
-const StringValue *Value::as_string() const {
-    assert(type() == Type::String);
-    return static_cast<const StringValue *>(this);
-}
-
-const KeywordValue *Value::as_keyword() const {
-    assert(type() == Type::Keyword);
-    return static_cast<const KeywordValue *>(this);
+NothingValue *Value::as_nothing() {
+    assert(type() == Type::Nothing);
+    return static_cast<NothingValue*>(this);
 }
 
 //builds string out of list (for printing)
@@ -136,31 +81,4 @@ bool ListValue::operator==(const Value *other) const {
     }
 
     return true;
-}
-
-string StringValue::inspect(bool print_readably) const {
-    if (print_readably) {
-        string str = "\"";
-        for (char c : m_str) {
-            switch (c) {
-            case '"':
-                str += '\\';
-                str += c;
-                break;
-            case '\\':
-                str += '\\';
-                str += '\\';
-                break;
-            case '\n':
-                str += '\\';
-                str += 'n';
-                break;
-            default:
-                str += c;
-            }
-        }
-        str += "\"";
-        return str;
-    }
-    return m_str;
 }

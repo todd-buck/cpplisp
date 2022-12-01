@@ -1,0 +1,415 @@
+;; ------------------------------------------------------------------------------
+;; TESTING IF
+;; (if exp1 expT expF) 
+;; Depending on the result of exp1 either expT or expF is evaluated and returned. 
+;; If exp1 is () then expF is evaluated, otherwise, expT is evaluated.
+;; ------------------------------------------------------------------------------
+(if (= 1 1) true false)
+;=>true
+
+(if (= 1 2) true false)
+;=>false
+
+(if nil true false)
+;=>false
+
+(if (= 1 1) (+ 3 3) (+ 4 4))
+;=>6
+
+(if (= 1 2) (+ 3 3) (+ 4 4))
+;=>8
+
+(if true (+ 1 1))
+;=>2
+
+(if true (if true (+ 1 1) (+ 2 2)) false)
+;=>2
+
+;; ------------------------------------------------------------------------------
+;; TESTING COND
+;; (cond t1 r1 t2 r2 t3 r3)
+;; if t1 is true returns r1...if t2 is true return r2...
+;; if no tn is true, return nil
+;; ------------------------------------------------------------------------------
+
+(cond true 1 true 2 true 3)
+;=>1
+
+(cond false 1 false 2 false 3)
+;=>nil
+
+(cond true 1 false 2 false 3)
+;=>1
+
+(cond false 1 true 2 false 3)
+;=>2
+
+(cond false 1 false 2 true 3)
+;=>3
+
+(cond (= 1 1) (+ 1 1) (= 2 3) (+ 2 3))
+;=>2
+
+(cond (= 1 2) (+ 1 2) (= 2 (+ 1 1)) (+ 2 2))
+;=>4
+
+(cond false (cond true 1 false 2) true (cond false 3 true 4))
+;=>4
+
+;; ------------------------------------------------------------------------------
+;; TESTING SET
+;; (set name exp)
+;; The symbol name is associated with the value of exp
+;; ------------------------------------------------------------------------------
+
+(set a 5)
+a
+;=>5
+
+(set a 6)
+a
+;=>6
+
+(set b (+ 2 (* 4 5))) 
+b
+;=>22
+
+(set SUPERBIGLIST (list 1 2 3 4 5 6 7 8 9))
+SUPERBIGLIST
+;=>(1 2 3 4 5 6 7 8 9)
+
+;; ------------------------------------------------------------------------------
+;; TESTING ARITHMETIC
+;; (+ expr1 epr2)
+;; Returns the sum of expressions. The expressions must be numbers
+;; (+ expr1 epr2)
+;; Returns the difference of expressions. The expressions must be numbers
+;; (* expr1 epr2)
+;; Returns the product of expressions. The expressions must be numbers
+;; (/ expr1 epr2)
+;; Returns the quotient. The expressions must be numbers
+;; ------------------------------------------------------------------------------
+
+(+ 1 2)
+;=>3
+
+(+ 5 (* 2 3))
+;=>11
+
+(- (+ 5 (* 2 3)) 3)
+;=>8
+
+(/ (- (+ 5 (* 2 3)) 3) 4)
+;=>2
+
+(/ (- (+ 515 (* 87 311)) 302) 27)
+;=>1010
+
+(* -3 6)
+;=>-18
+
+(/ (- (+ 515 (* -87 311)) 296) 27)
+;=>-994
+
+;; ------------------------------------------------------------------------------
+;; TESTING EQUALITY
+;; (= expr1 expr2)
+;; Compares the values of two atoms or (). Returns () when either expression is a larger list.
+;; ------------------------------------------------------------------------------
+
+(= nil nil)
+;=>true
+
+(= (list 1 2 3) (list 1 2 3))
+;=>true
+
+(= 1 1)
+;=>true
+
+(= 1 2)
+;=>nil
+
+(= (list 1 2 3) (list 1 2 3 4))
+;=>nil
+
+(= nil 1)
+;=>nil
+
+(= nil (list 1 2 3))
+;=>nil
+
+(= 1 (list 1 2 3))
+;=>nil
+
+;; ------------------------------------------------------------------------------
+;; TESTING INEQUALITY
+;; (< expr1 expr2)
+;; Return t when expr1 is less than expr2. Expr1 and expr2 must be numbers.
+;; (> expr1 expr2)
+;; Return t when expr1 is greater than expr2. Expr1 and expr2 must be numbers.
+;; ------------------------------------------------------------------------------
+
+(< 2 3)
+;=>true
+
+(< 3 3)
+;=>false
+
+(< 4 3)
+;=>false
+
+(> 2 3)
+;=>false
+
+(> 3 3)
+;=>false
+
+(> 4 3)
+;=>true
+
+;; ------------------------------------------------------------------------------
+;; TESTING CONS
+;; (cons expr1 expr2)
+;; Create a cons cell with expr1 as car and expr2 and cdr: ie: (exp1 . expr2)
+;; ------------------------------------------------------------------------------
+
+(cons 1 2)
+;=>(1 2)
+
+(cons (cons 1 2) (cons 3 4))
+;=>(1 2 3 4)
+
+(cons 1 (cons 2 (cons 3 4)))
+;=>(1 2 3 4)
+
+(cons (list 1 2 3 4) (list 5 6 7 8))
+;=>(1 2 3 4 5 6 7 8)
+
+(cons (list 1 2) (cons 3 4))
+;=>(1 2 3 4)
+
+(cons 1 (list 2 3 4))
+;=>(1 2 3 4)
+
+(cons 1 nil)
+;=>(1 nil)
+
+(cons (list 1 2 3) nil)
+;=>(1 2 3 nil)
+
+;; ------------------------------------------------------------------------------
+;; TESTING CAR/CDR
+;; (car expr)
+;; Expr should be a non empty list. Car returns the car cell of the first cons cell
+;; (cdr expr)
+;; Expr should be a non empty list. Cdr returns the cdr cell of the first cons cell
+;; ------------------------------------------------------------------------------
+
+(set a (list 1 2 3))
+
+(car a)
+;=>1
+
+(car (cdr a))
+;=>2
+
+(car (cdr (cdr a)))
+;=>3
+
+(car (cdr (cdr (cdr a))))
+;=>nil
+
+(set b (cons 1 (cons 2 (cons 3 4))))
+
+(car b)
+;=>1
+
+(car (cdr b))
+;=>2
+
+(car (cdr (cdr b)))
+;=>3
+
+(car (cdr (cdr (cdr b))))
+;=>4
+
+(car (cdr (cdr (cdr (cdr b)))))
+;=>nil
+
+(set c 5)
+
+(car c)
+;=>5
+
+(cdr c)
+;=>nil
+
+;; ------------------------------------------------------------------------------
+;; TESTING NUMBER?
+;; (number? Expr)
+;; Returns T if the expr is numeric, () otherwise
+;; ------------------------------------------------------------------------------
+
+(number? 1)
+;=>true
+
+(number? (+ 1 2))
+;=>true
+
+(number? nil)
+;=>nil
+
+(number? (list 1 2 3))
+;=>nil
+
+(number? true)
+;=>nil
+
+;; ------------------------------------------------------------------------------
+;; TESTING SYMBOL?
+;; (symbol? Expr)
+;; Returns T if the expr is a name, () otherwise
+;; ------------------------------------------------------------------------------
+
+(symbol? 5)
+;=>false
+
+(set a 5)
+(symbol? a)
+;=>true
+
+(symbol? (list 1 2 3))
+;=>false
+
+(set b (list 1 2 3))
+(symbol? b)
+;=>true
+
+(symbol? true)
+;=>false
+
+(set c true)
+(symbol? c)
+;=>true
+
+(symbol? nil)
+;=>false
+
+(set d nil)
+(symbol? d)
+;=>true
+
+(symbol? e)
+;=>false
+
+;; ------------------------------------------------------------------------------
+;; TESTING LIST?
+;; (list? Expr)
+;; Returns T iff Expr is not an atom
+;; ------------------------------------------------------------------------------
+
+(list? (list 1 2 3 4 5))
+;=>true
+(list? 5)
+;=>false
+(list? (cons 1 (cons 2 nil)))
+;=>true
+(list? true)
+;=>false
+(list? nil)
+;=>false
+(list? (cons nil nil))
+;=>true
+
+;; ------------------------------------------------------------------------------
+;; TESTING NIL?
+;; (nil? Expr)
+;; Return T iff Expr is ()
+;; ------------------------------------------------------------------------------
+
+(nil? nil)
+;=>true
+
+(nil? 5)
+;=>false
+
+;; ------------------------------------------------------------------------------
+;; TESTING AND?
+;; (AND? exp1 exp2)
+;; Return nil if either expression is nil
+;; ------------------------------------------------------------------------------
+
+(and? nil nil)
+;=>nil
+
+(and? nil 1)
+;=>nil
+
+(and? 1 1)
+;=>true
+
+(and? nil (and? 1 1))
+;=>nil
+
+(and? 1 (and? 1 1))
+;=>true
+
+;; ------------------------------------------------------------------------------
+;; TESTING OR?
+;; (OR? exp1 exp2)
+;; Return nil if both expressions are nil
+;; ------------------------------------------------------------------------------
+
+(or? nil nil)
+;=>nil
+
+(or? 1 nil)
+;=>true
+
+(or? 1 1)
+;=>true
+
+(or? 1 (or? 1 nil))
+;=>true
+
+(or? 1 (or? 1 1))
+;=>true
+
+(or? nil (or? nil nil))
+;=>nil
+
+;; ------------------------------------------------------------------------------
+;; TESTING FUNCTIONS
+;; (define name (arg1 .. argN) expr)
+;; Defines a function, name. Args is a list of formal parameters. When called the expression 
+;; will be evualuated with the actual parameters replacing the formal parameters.
+;; (funname expr1 exprN)
+;; Calling of function defined by funname. The expressions are evaluated and 
+;; passed as arguments to the function.
+;; ------------------------------------------------------------------------------
+
+;; Testing recursive sumdown function
+
+(define sumdown (N) (if (> N 0) (+ N (sumdown  (- N 1))) 0))
+
+(sumdown 1)
+;=>1
+
+(sumdown 2)
+;=>3
+
+(sumdown 6)
+;=>21
+
+;; Testing recursive fibonacci function
+
+(define fib (N) (if (= N 0) 1 (if (= N 1) 1 (+ (fib (- N 1)) (fib (- N 2))))))
+
+(fib 1)
+;=>1
+
+(fib 2)
+;=>2
+
+(fib 4)
+;=>5

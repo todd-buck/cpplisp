@@ -73,6 +73,7 @@ Value *read_integer(Reader &reader) {
     long number = 0;
     bool negative = false;
     for (char c: *token) {
+        // need to modify here for decimals
         if (c == '-') {
             negative = true;
         } else {

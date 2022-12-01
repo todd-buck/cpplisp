@@ -1,5 +1,6 @@
 #include <iostream>
 #include <unordered_map>
+#include <regex>
 
 #include "../../linenoise.hpp"
 #include "reader.hpp"
@@ -24,15 +25,33 @@ Value *EVAL(Value *ast, Env &env) {
         auto list = ast->as_list();
         auto first = list->at(0); 
         if(first->is_symbol()) {
+<<<<<<< HEAD:archive/step4_if_fn_do.cpp
+            auto special = first->as_symbol();
+            if (special->matches("define")) { // keep
+                auto key = list->at(1)->as_symbol();                
+                auto env_ptr = &env;
+                auto binds = list->at(2)->as_list();
+                auto body = list->at(3);
+                auto closure = [env_ptr, binds, body](size_t argc, Value ** args) {
+                    auto exprs = new ListValue {};
+                    for(size_t i = 0; i < argc; i++) {
+                        exprs->push(args[i]);
+                    }
+                    auto function_env = new Env { env_ptr, binds, exprs };
+                    return EVAL(body, *function_env);
+                };
+                auto val = new FunctionValue { closure };
+=======
             auto special = first->as_symbol(); 
             if (special->matches("def!")) {
                 // symbol "def!": call the set method of the current environment (second parameter of EVAL called env) using the unevaluated first parameter (second list element) as the symbol key and the evaluated second parameter as the value.
                 auto key = list->at(1)->as_symbol();
                 auto val = EVAL(list->at(2), env);
+>>>>>>> main:impls/cpp/step4_if_fn_do.cpp
                 env.set(key, val);
-                return val;
+                return NothingValue::the();
             }
-            else if (special->matches("let*")) {
+            else if (special->matches("let*")) { // remove
                 // symbol "let*": create a new environment using the current environment as the outer value and then use the first parameter as a list of new bindings in the "let*" environment. Take the second element of the binding list, call EVAL using the new "let*" environment as the evaluation environment, then call set on the "let*" environment using the first binding list element as the key and the evaluated second element as the value. This is repeated for each odd/even pair in the binding list. Note in particular, the bindings earlier in the list can be referred to by later bindings. Finally, the second parameter (third element) of the original let* form is evaluated using the new "let*" environment and the result is returned as the result of the let* (the new let environment is discarded upon completion).
                 auto new_env = new Env { &env };
                 auto bindings = list->at(1)->as_list();
@@ -48,14 +67,18 @@ Value *EVAL(Value *ast, Env &env) {
                     new_env->set(key, val);
                 }
                 return EVAL(list->at(2), *new_env);
-            } else if(special->matches("do")) {
+            } else if(special->matches("do")) { // remove
                 Value *result = nullptr;
                 assert(list->size() > 1);
                 for(size_t i = 1; i < list->size(); ++i) {
                     result = EVAL(list->at(i), env);
                 }
+<<<<<<< HEAD:archive/step4_if_fn_do.cpp
+            } else if(special->matches("if")) { // keep
+=======
                 return result;
             } else if(special->matches("if")) {
+>>>>>>> main:impls/cpp/step4_if_fn_do.cpp
                 auto condition = list->at(1);
                 auto true_expr = list->at(2);
                 auto false_expr = list->size() >= 4 ? list->at(3) : NilValue::the();
@@ -64,7 +87,7 @@ Value *EVAL(Value *ast, Env &env) {
                 } else {
                     return EVAL(false_expr, env);
                 }
-            } else if(special->matches("fn*")) {
+            } else if(special->matches("fn*")) { // remove
                 auto env_ptr = &env;
                 auto binds = list->at(1)->as_list();
                 auto body = list->at(2);
@@ -78,6 +101,66 @@ Value *EVAL(Value *ast, Env &env) {
                 };
                 return new FunctionValue { closure };
             }
+            else if(special->matches("set")) { // keep
+                //set potential_variable value
+                assert(list->size() == 3);
+
+                //casts potential variable as a string
+                string potential_variable = list->at(1)->inspect();
+
+                //if variable is only numbers
+                if(regex_match(potential_variable.begin(), potential_variable.end(), regex("^[0-9]*$"))) {
+                    throw new ExceptionValue { "variable (" + potential_variable + ") cannot contain only numbers." };
+                }
+
+                //if variable contains illegal characters
+                if(!regex_match(potential_variable.begin(), potential_variable.end(), regex("^[A-Za-z0-9_-]*$"))) {
+                    throw new ExceptionValue { "variable (" + potential_variable + ") must only contain letters, numbers, and variables." };
+                }
+
+                // TESTED, WORKS
+                // I think we can just reuse def here
+                auto key = list->at(1)->as_symbol();
+                auto val = EVAL(list->at(2), env);
+                env.set(key, val);
+                // If there's no return variable then it'll still set the variable
+                // but say "set not found" after. Returning nullptr creates a segfault.
+                return NothingValue::the();
+
+            }
+            else if(special->matches("cond")) { // keep
+                // (cond t1 r1 t2 r2 t3 r3)
+                // if t1 is true returns r1...if t2 is true return r2...
+                // Most efficient if lazy evalauation is used.
+                // Behavior undefined if no tn is true. (probably return nil, buit exit(1) is also fine)
+
+                // FIXME: if this is fucking up do size-1
+                for (size_t i = 1; i < list->size(); i += 2) { // need to cast to int instead of size_t original type
+                    auto tcond = list->at(i);
+                    auto treturn = list->at(i+1);
+                    if(EVAL(tcond, env)->is_truthy()) {
+                        return EVAL(treturn, env);
+                    } 
+                }
+                return NilValue::the();
+            }
+            else if(special->matches("symbol?")) { // keep
+                if(list->size() != 2) {
+                    throw new ExceptionValue { "Usage: (symbol? expr)" };
+                }
+
+                // If expr is any type other than symbol, return false
+                if(list->at(1)->type() != Value::Type::Symbol) {
+                    return FalseValue::the();
+                }
+                
+                // If symbol is not in current or top-level environment, return false
+                if(env.find(list->at(1)->as_symbol()) == nullptr) {
+                    return FalseValue::the();
+                }
+
+                return TrueValue::the();
+            }
         }
         // otherwise: call eval_ast on the list and apply the first element to the rest as before.
         // old code
@@ -88,7 +171,6 @@ Value *EVAL(Value *ast, Env &env) {
             args[i - 1] = eval_list->at(i);
         }
         return fn(eval_list->size() - 1, args);
-        
 
     }
 }

@@ -148,10 +148,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <errno.h>
-#include <string.h>
+#include <strings.h>
 #include <ctype.h>
 #include <sys/types.h>
-#include <string>
+#include <string.h>
 #include <fstream>
 #include <functional>
 #include <vector>

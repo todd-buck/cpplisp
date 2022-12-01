@@ -14,7 +14,7 @@ import pty, array, fcntl, termios
 IS_PY_3 = sys.version_info[0] == 3
 
 debug_file = None
-log_file = None
+log_file = open(sys.path[0]+ "/impls/tests/tests_log.txt", "w")
 
 def debug(data):
     if debug_file:

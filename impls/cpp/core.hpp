@@ -21,9 +21,12 @@ Value *lte(size_t argc, Value **args);
 Value *gt(size_t argc, Value **args);
 Value *gte(size_t argc, Value **args);
 
-Value *prn(size_t argc, Value **args);
-Value *pr_str_function(size_t argc, Value **args);
-Value *println(size_t argc, Value **args);
-Value *str(size_t argc, Value **args);
-Value *not_function(size_t argc, Value **args);
-
+// new additions
+Value *number_q(size_t argc, Value **args);
+// Value *symbol_q(size_t argc, Value **args);
+Value *nil_q(size_t argc, Value **args);
+Value *cons(size_t argc, Value **args);
+Value *car(size_t argc, Value **args);
+Value *cdr(size_t argc, Value **args);
+Value *and_q(size_t argc, Value **args);
+Value *or_q(size_t argc, Value **args);

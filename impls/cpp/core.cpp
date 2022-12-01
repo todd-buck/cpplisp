@@ -12,21 +12,38 @@ unordered_map<string, Function> build_namespace() {
     ns["-"] = subtract;
     ns["*"] = multiply;
     ns["/"] = divide;
-    ns["list"] = list;
     ns["list?"] = list_q;
-    ns["empty?"] = empty_q;
-    ns["count"] = cnt;
     ns["="] = eq;
     ns["<"] = lt;
-    ns["<="] = lte;
     ns[">"] = gt;
-    ns[">="] = gte;
 
+    // new additions
+    ns["number?"] = number_q;
+    //ns["symbol?"] = symbol_q;
+    ns["nil?"] = nil_q;
+    ns["cons"] = cons;
+    ns["car"] = car;
+    ns["cdr"] = cdr;
     ns["prn"] = prn;
-    ns["pr-str"] = pr_str_function;
-    ns["println"] = println;
-    ns["str"] = str;
-    ns["not"] = not_function;
+    ns["and?"] = and_q;
+    ns["or?"] = or_q;
+
+    // to be removed?
+    ns["<="] = lte;
+    ns[">="] = gte;
+    ns["count"] = cnt; // size of a list
+    ns["list"] = list; // list constructor?
+    ns["empty?"] = empty_q; // is this "nil?"
+
+    // for symbol?
+    ns["define"];
+    ns["let*"];
+    ns["do"];
+    ns["if"];
+    ns["fn*"];
+    ns["set"];
+    ns["cond"];
+    ns["symbol?"];
 
     return ns;
 }
@@ -84,21 +101,18 @@ Value *divide(size_t argc, Value **args) {
 }
 
 Value *prn(size_t argc, Value **args) {
-    if(argc == 0) {
-        cout << "\n";
-        return NilValue::the();
-    }
-
-    for (size_t i = 0; i < argc; ++i) {
-        cout << print_string(args[i], true);
-        if (i < argc - 1)
-            cout << ' ';
-    }
-    cout << "\n";
-    return NilValue::the();
+    assert(argc >= 1);
+    cout << print_string(args[0], true) << endl;
+    return NothingValue::the();
 }
 
+// modify to be cons
 Value *list(size_t argc, Value **args) {
+    //assert size == 2
+    //auto cons_cell = new ListValue { }
+    //push 1st arg
+    //push 2nd arg
+    //return cons_cell
     auto parameter_list = new ListValue { };
     for(size_t i = 0; i < argc; i++) {
         parameter_list->push(args[i]);
@@ -130,13 +144,18 @@ Value *cnt(size_t argc, Value **args) {
 }
 
 Value *eq(size_t argc, Value **args) {
+
     assert(argc >= 2);
     auto a = args[0];
     auto b = args[1];
 
-    if(*a == b) 
+    if(*a == b || (a->is_nil() && b->is_nil())
+        || (a->is_true() && b->is_true())
+        || (a->is_false() && b->is_false())) {
         return TrueValue::the();
-    return FalseValue::the();
+    }
+
+    return NilValue::the();
 }
 
 Value *lt(size_t argc, Value **args) {
@@ -191,46 +210,103 @@ Value *gte(size_t argc, Value **args) {
     }
 }
 
-Value *pr_str_function(size_t argc, Value **args) {
-    if (argc == 0)
-        return new StringValue { "" };
-    string str = "";
-    for (size_t i = 0; i < argc; ++i) {
-        str += print_string(args[i], true);
-        if (i < argc - 1)
-            str += ' ';
-    }
-    return new StringValue { str };
-}
+// NEW THINGS YAY!!!!!
 
-Value *println(size_t argc, Value **args) {
-    if (argc == 0) {
-        cout << "\n";
-        return NilValue::the();
-    }
-    string str = "";
-    for (size_t i = 0; i < argc; ++i) {
-        str += print_string(args[i], false);
-        if (i < argc - 1)
-            str += ' ';
-    }
-    cout << str << "\n";
+// (number? Expr)
+// Returns T if the expr is numeric, () otherwise
+Value *number_q(size_t argc, Value **args) {
+
+    // TESTED, WORKS
+    assert(argc >= 1);
+    if (args[0]->is_integer())
+        return TrueValue::the();
     return NilValue::the();
 }
 
-Value *str(size_t argc, Value **args) {
-    if (argc == 0)
-        return new StringValue { "" };
-    string str = "";
-    for (size_t i = 0; i < argc; ++i) {
-        str += print_string(args[i], false);
-    }
-    return new StringValue { str };
+// (nil? Expr)
+// Return T iff Expr is ()
+Value *nil_q(size_t argc, Value **args) {
+    assert(argc >= 1);
+    if (args[0]->is_nil())
+        return TrueValue::the();
+    return FalseValue::the();
+
 }
 
-Value *not_function(size_t argc, Value **args) {
+// (cons expr1 expr2)
+// Create a cons cell with expr1 as car and expr2 and cdr: ie: (exp1 . expr2)
+Value *cons(size_t argc, Value **args) {
+    assert(argc >= 2);
+    auto cons_cell = new ListValue { };
+
+    if (args[0]->is_list()) {
+        for (size_t i = 0; i < args[0]->as_list()->size(); i++) {
+            cons_cell->push(args[0]->as_list()->at(i));
+        }
+    }
+    else {
+        cons_cell->push(args[0]);
+    }
+
+    if (args[1]->is_list()) {
+        for (size_t i = 0; i < args[1]->as_list()->size(); i++) {
+            cons_cell->push(args[1]->as_list()->at(i));
+        }
+    }
+    else {
+        cons_cell->push(args[1]);
+    }
+
+    return cons_cell;
+}
+
+// (car expr)
+// Expr should be a non empty list. Car returns the car cell of the first cons cell
+Value *car(size_t argc, Value **args) {
     assert(argc >= 1);
-    if (args[0]->is_truthy())
-        return FalseValue::the();
-    return TrueValue::the();
+    
+    if (args[0]->is_list() && !args[0]->as_list()->is_empty()) {
+        return args[0]->as_list()->at(0);
+    }
+    else if (args[0]->is_integer()) {
+        return args[0]->as_integer();
+    }
+
+    return NilValue::the();
+}
+
+// (cdr expr)
+// Expr should be a non empty list. Cdr returns the cdr cell of the first cons cell
+Value *cdr(size_t argc, Value **args) {
+    assert(argc >= 1);
+    if (args[0]->is_list() && !args[0]->as_list()->is_empty()) {
+        auto parameter_list = new ListValue { };
+        for(size_t i = 1; i < args[0]->as_list()->size(); i++) {
+            parameter_list->push(args[0]->as_list()->at(i));
+        }
+        return parameter_list;
+    }
+    return NilValue::the();
+}
+
+// (AND? exp1 exp2)
+// Return nil if either expression is nil
+// TESTED, CORRECT
+
+// using false and nil synonymously?
+Value *and_q(size_t argc, Value **args) {
+    assert(argc >= 2);
+    if (args[0]->is_nil() || args[1]->is_nil())
+        return NilValue::the();
+    return TrueValue::the();    
+}
+
+// (OR? exp1 exp2)
+// Return nil if both expressions are nil
+// TESTED, CORRECT
+Value *or_q(size_t argc, Value **args) {
+    assert(argc >= 2);
+    if (args[0]->is_nil() && args[1]->is_nil())
+        return NilValue::the();
+    return TrueValue::the();      
 }

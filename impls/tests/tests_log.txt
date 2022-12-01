@@ -1,0 +1,211 @@
+------------------------------------------------------------------------------
+TESTING IF
+(if exp1 expT expF) 
+Depending on the result of exp1 either expT or expF is evaluated and returned. 
+If exp1 is () then expF is evaluated, otherwise, expT is evaluated.
+------------------------------------------------------------------------------
+TEST: '(if (= 1 1) true false)' -> ['',true] -> SUCCESS
+TEST: '(if (= 1 2) true false)' -> ['',false] -> SUCCESS
+TEST: '(if nil true false)' -> ['',false] -> SUCCESS
+TEST: '(if (= 1 1) (+ 3 3) (+ 4 4))' -> ['',6] -> SUCCESS
+TEST: '(if (= 1 2) (+ 3 3) (+ 4 4))' -> ['',8] -> SUCCESS
+TEST: '(if true (+ 1 1))' -> ['',2] -> SUCCESS
+TEST: '(if true (if true (+ 1 1) (+ 2 2)) false)' -> ['',2] -> SUCCESS
+------------------------------------------------------------------------------
+TESTING COND
+(cond t1 r1 t2 r2 t3 r3)
+if t1 is true returns r1...if t2 is true return r2...
+if no tn is true, return nil
+------------------------------------------------------------------------------
+TEST: '(cond true 1 true 2 true 3)' -> ['',1] -> SUCCESS
+TEST: '(cond false 1 false 2 false 3)' -> ['',nil] -> SUCCESS
+TEST: '(cond true 1 false 2 false 3)' -> ['',1] -> SUCCESS
+TEST: '(cond false 1 true 2 false 3)' -> ['',2] -> SUCCESS
+TEST: '(cond false 1 false 2 true 3)' -> ['',3] -> SUCCESS
+TEST: '(cond (= 1 1) (+ 1 1) (= 2 3) (+ 2 3))' -> ['',2] -> SUCCESS
+TEST: '(cond (= 1 2) (+ 1 2) (= 2 (+ 1 1)) (+ 2 2))' -> ['',4] -> SUCCESS
+TEST: '(cond false (cond true 1 false 2) true (cond false 3 true 4))' -> ['',4] -> SUCCESS
+------------------------------------------------------------------------------
+TESTING SET
+(set name exp)
+The symbol name is associated with the value of exp
+------------------------------------------------------------------------------
+TEST: '(set a 5)' -> ['',] -> SUCCESS (result ignored)
+TEST: 'a' -> ['',5] -> SUCCESS
+TEST: '(set a 6)' -> ['',] -> SUCCESS (result ignored)
+TEST: 'a' -> ['',6] -> SUCCESS
+TEST: '(set b (+ 2 (* 4 5))) ' -> ['',] -> SUCCESS (result ignored)
+TEST: 'b' -> ['',22] -> SUCCESS
+TEST: '(set SUPERBIGLIST (list 1 2 3 4 5 6 7 8 9))' -> ['',] -> SUCCESS (result ignored)
+TEST: 'SUPERBIGLIST' -> ['',(1 2 3 4 5 6 7 8 9)] -> SUCCESS
+------------------------------------------------------------------------------
+TESTING ARITHMETIC
+(+ expr1 epr2)
+Returns the sum of expressions. The expressions must be numbers
+(+ expr1 epr2)
+Returns the difference of expressions. The expressions must be numbers
+(* expr1 epr2)
+Returns the product of expressions. The expressions must be numbers
+(/ expr1 epr2)
+Returns the quotient. The expressions must be numbers
+------------------------------------------------------------------------------
+TEST: '(+ 1 2)' -> ['',3] -> SUCCESS
+TEST: '(+ 5 (* 2 3))' -> ['',11] -> SUCCESS
+TEST: '(- (+ 5 (* 2 3)) 3)' -> ['',8] -> SUCCESS
+TEST: '(/ (- (+ 5 (* 2 3)) 3) 4)' -> ['',2] -> SUCCESS
+TEST: '(/ (- (+ 515 (* 87 311)) 302) 27)' -> ['',1010] -> SUCCESS
+TEST: '(* -3 6)' -> ['',-18] -> SUCCESS
+TEST: '(/ (- (+ 515 (* -87 311)) 296) 27)' -> ['',-994] -> SUCCESS
+------------------------------------------------------------------------------
+TESTING EQUALITY
+(= expr1 expr2)
+Compares the values of two atoms or (). Returns () when either expression is a larger list.
+------------------------------------------------------------------------------
+TEST: '(= nil nil)' -> ['',true] -> SUCCESS
+TEST: '(= (list 1 2 3) (list 1 2 3))' -> ['',true] -> SUCCESS
+TEST: '(= 1 1)' -> ['',true] -> SUCCESS
+TEST: '(= 1 2)' -> ['',nil] -> SUCCESS
+TEST: '(= (list 1 2 3) (list 1 2 3 4))' -> ['',nil] -> SUCCESS
+TEST: '(= nil 1)' -> ['',nil] -> SUCCESS
+TEST: '(= nil (list 1 2 3))' -> ['',nil] -> SUCCESS
+TEST: '(= 1 (list 1 2 3))' -> ['',nil] -> SUCCESS
+------------------------------------------------------------------------------
+TESTING INEQUALITY
+(< expr1 expr2)
+Return t when expr1 is less than expr2. Expr1 and expr2 must be numbers.
+(> expr1 expr2)
+Return t when expr1 is greater than expr2. Expr1 and expr2 must be numbers.
+------------------------------------------------------------------------------
+TEST: '(< 2 3)' -> ['',true] -> SUCCESS
+TEST: '(< 3 3)' -> ['',false] -> SUCCESS
+TEST: '(< 4 3)' -> ['',false] -> SUCCESS
+TEST: '(> 2 3)' -> ['',false] -> SUCCESS
+TEST: '(> 3 3)' -> ['',false] -> SUCCESS
+TEST: '(> 4 3)' -> ['',true] -> SUCCESS
+------------------------------------------------------------------------------
+TESTING CONS
+(cons expr1 expr2)
+Create a cons cell with expr1 as car and expr2 and cdr: ie: (exp1 . expr2)
+------------------------------------------------------------------------------
+TEST: '(cons 1 2)' -> ['',(1 2)] -> SUCCESS
+TEST: '(cons (cons 1 2) (cons 3 4))' -> ['',(1 2 3 4)] -> SUCCESS
+TEST: '(cons 1 (cons 2 (cons 3 4)))' -> ['',(1 2 3 4)] -> SUCCESS
+TEST: '(cons (list 1 2 3 4) (list 5 6 7 8))' -> ['',(1 2 3 4 5 6 7 8)] -> SUCCESS
+TEST: '(cons (list 1 2) (cons 3 4))' -> ['',(1 2 3 4)] -> SUCCESS
+TEST: '(cons 1 (list 2 3 4))' -> ['',(1 2 3 4)] -> SUCCESS
+TEST: '(cons 1 nil)' -> ['',(1 nil)] -> SUCCESS
+TEST: '(cons (list 1 2 3) nil)' -> ['',(1 2 3 nil)] -> SUCCESS
+------------------------------------------------------------------------------
+TESTING CAR/CDR
+(car expr)
+Expr should be a non empty list. Car returns the car cell of the first cons cell
+(cdr expr)
+Expr should be a non empty list. Cdr returns the cdr cell of the first cons cell
+------------------------------------------------------------------------------
+TEST: '(set a (list 1 2 3))' -> ['',] -> SUCCESS (result ignored)
+TEST: '(car a)' -> ['',1] -> SUCCESS
+TEST: '(car (cdr a))' -> ['',2] -> SUCCESS
+TEST: '(car (cdr (cdr a)))' -> ['',3] -> SUCCESS
+TEST: '(car (cdr (cdr (cdr a))))' -> ['',nil] -> SUCCESS
+TEST: '(set b (cons 1 (cons 2 (cons 3 4))))' -> ['',] -> SUCCESS (result ignored)
+TEST: '(car b)' -> ['',1] -> SUCCESS
+TEST: '(car (cdr b))' -> ['',2] -> SUCCESS
+TEST: '(car (cdr (cdr b)))' -> ['',3] -> SUCCESS
+TEST: '(car (cdr (cdr (cdr b))))' -> ['',4] -> SUCCESS
+TEST: '(car (cdr (cdr (cdr (cdr b)))))' -> ['',nil] -> SUCCESS
+TEST: '(set c 5)' -> ['',] -> SUCCESS (result ignored)
+TEST: '(car c)' -> ['',5] -> SUCCESS
+TEST: '(cdr c)' -> ['',nil] -> SUCCESS
+------------------------------------------------------------------------------
+TESTING NUMBER?
+(number? Expr)
+Returns T if the expr is numeric, () otherwise
+------------------------------------------------------------------------------
+TEST: '(number? 1)' -> ['',true] -> SUCCESS
+TEST: '(number? (+ 1 2))' -> ['',true] -> SUCCESS
+TEST: '(number? nil)' -> ['',nil] -> SUCCESS
+TEST: '(number? (list 1 2 3))' -> ['',nil] -> SUCCESS
+TEST: '(number? true)' -> ['',nil] -> SUCCESS
+------------------------------------------------------------------------------
+TESTING SYMBOL?
+(symbol? Expr)
+Returns T if the expr is a name, () otherwise
+------------------------------------------------------------------------------
+TEST: '(symbol? 5)' -> ['',false] -> SUCCESS
+TEST: '(set a 5)' -> ['',] -> SUCCESS (result ignored)
+TEST: '(symbol? a)' -> ['',true] -> SUCCESS
+TEST: '(symbol? (list 1 2 3))' -> ['',false] -> SUCCESS
+TEST: '(set b (list 1 2 3))' -> ['',] -> SUCCESS (result ignored)
+TEST: '(symbol? b)' -> ['',true] -> SUCCESS
+TEST: '(symbol? true)' -> ['',false] -> SUCCESS
+TEST: '(set c true)' -> ['',] -> SUCCESS (result ignored)
+TEST: '(symbol? c)' -> ['',true] -> SUCCESS
+TEST: '(symbol? nil)' -> ['',false] -> SUCCESS
+TEST: '(set d nil)' -> ['',] -> SUCCESS (result ignored)
+TEST: '(symbol? d)' -> ['',true] -> SUCCESS
+TEST: '(symbol? e)' -> ['',false] -> SUCCESS
+------------------------------------------------------------------------------
+TESTING LIST?
+(list? Expr)
+Returns T iff Expr is not an atom
+------------------------------------------------------------------------------
+TEST: '(list? (list 1 2 3 4 5))' -> ['',true] -> SUCCESS
+TEST: '(list? 5)' -> ['',false] -> SUCCESS
+TEST: '(list? (cons 1 (cons 2 nil)))' -> ['',true] -> SUCCESS
+TEST: '(list? true)' -> ['',false] -> SUCCESS
+TEST: '(list? nil)' -> ['',false] -> SUCCESS
+TEST: '(list? (cons nil nil))' -> ['',true] -> SUCCESS
+------------------------------------------------------------------------------
+TESTING NIL?
+(nil? Expr)
+Return T iff Expr is ()
+------------------------------------------------------------------------------
+TEST: '(nil? nil)' -> ['',true] -> SUCCESS
+TEST: '(nil? 5)' -> ['',false] -> SUCCESS
+------------------------------------------------------------------------------
+TESTING AND?
+(AND? exp1 exp2)
+Return nil if either expression is nil
+------------------------------------------------------------------------------
+TEST: '(and? nil nil)' -> ['',nil] -> SUCCESS
+TEST: '(and? nil 1)' -> ['',nil] -> SUCCESS
+TEST: '(and? 1 1)' -> ['',true] -> SUCCESS
+TEST: '(and? nil (and? 1 1))' -> ['',nil] -> SUCCESS
+TEST: '(and? 1 (and? 1 1))' -> ['',true] -> SUCCESS
+------------------------------------------------------------------------------
+TESTING OR?
+(OR? exp1 exp2)
+Return nil if both expressions are nil
+------------------------------------------------------------------------------
+TEST: '(or? nil nil)' -> ['',nil] -> SUCCESS
+TEST: '(or? 1 nil)' -> ['',true] -> SUCCESS
+TEST: '(or? 1 1)' -> ['',true] -> SUCCESS
+TEST: '(or? 1 (or? 1 nil))' -> ['',true] -> SUCCESS
+TEST: '(or? 1 (or? 1 1))' -> ['',true] -> SUCCESS
+TEST: '(or? nil (or? nil nil))' -> ['',nil] -> SUCCESS
+------------------------------------------------------------------------------
+TESTING FUNCTIONS
+(define name (arg1 .. argN) expr)
+Defines a function, name. Args is a list of formal parameters. When called the expression 
+will be evualuated with the actual parameters replacing the formal parameters.
+(funname expr1 exprN)
+Calling of function defined by funname. The expressions are evaluated and 
+passed as arguments to the function.
+------------------------------------------------------------------------------
+Testing recursive sumdown function
+TEST: '(define sumdown (N) (if (> N 0) (+ N (sumdown  (- N 1))) 0))' -> ['',] -> SUCCESS (result ignored)
+TEST: '(sumdown 1)' -> ['',1] -> SUCCESS
+TEST: '(sumdown 2)' -> ['',3] -> SUCCESS
+TEST: '(sumdown 6)' -> ['',21] -> SUCCESS
+Testing recursive fibonacci function
+TEST: '(define fib (N) (if (= N 0) 1 (if (= N 1) 1 (+ (fib (- N 1)) (fib (- N 2))))))' -> ['',] -> SUCCESS (result ignored)
+TEST: '(fib 1)' -> ['',1] -> SUCCESS
+TEST: '(fib 2)' -> ['',2] -> SUCCESS
+TEST: '(fib 4)' -> ['',5] -> SUCCESS
+
+TEST RESULTS (for ../tests/tests_master.txt):
+    0: soft failing tests
+    0: failing tests
+  111: passing tests
+  111: total tests
+

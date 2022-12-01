@@ -22,6 +22,7 @@ public:
 
     // defining three methods for the env object
 
+    // used to implement set
     // SET: takes a symbol key and a mal value and adds to the data structure
     void set(SymbolValue *key, Value *val) {
         m_data[key] = val;
