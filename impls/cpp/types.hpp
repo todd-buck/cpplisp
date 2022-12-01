@@ -57,15 +57,15 @@ public:
     NilValue *as_nil();
     NothingValue *as_nothing(); // added
 
-    ListValue *as_list() const;
-    SymbolValue *as_symbol()  const;
-    IntegerValue *as_integer()  const;
-    FunctionValue *as_function()  const;
-    ExceptionValue *as_exception()  const;
-    TrueValue *as_true()  const;
-    FalseValue *as_false()  const;
-    NilValue *as_nil()  const;
-    NothingValue *as_nothing()  const; // added
+    // ListValue *as_list() const;
+    // SymbolValue *as_symbol()  const;
+    // IntegerValue *as_integer()  const;
+    // FunctionValue *as_function()  const;
+    // ExceptionValue *as_exception()  const;
+    // TrueValue *as_true()  const;
+    // FalseValue *as_false()  const;
+    // NilValue *as_nil()  const;
+    // NothingValue *as_nothing()  const; // added
 
 };
 
@@ -138,10 +138,6 @@ public:
     IntegerValue(long l) : m_long{l} {}
     
     virtual Type type() const override {return Type::Integer;}
-    
-    virtual string inspect(bool) const override {
-        return to_string(m_long);
-    }
 
     virtual bool is_integer() const override { return true; }
     
@@ -150,10 +146,6 @@ public:
     }
 
     long to_long() { return m_long; }
-
-    virtual Type type() const override {return Type::Integer;}
-
-    virtual bool is_integer() const override { return true; }
 
     virtual string inspect(bool) const override {
         return to_string(m_long);

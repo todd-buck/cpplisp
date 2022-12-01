@@ -30,3 +30,4 @@ Value *car(size_t argc, Value **args);
 Value *cdr(size_t argc, Value **args);
 Value *and_q(size_t argc, Value **args);
 Value *or_q(size_t argc, Value **args);
+Value *print(size_t argc, Value **args);

@@ -24,7 +24,7 @@ unordered_map<string, Function> build_namespace() {
     ns["cons"] = cons;
     ns["car"] = car;
     ns["cdr"] = cdr;
-    ns["prn"] = prn;
+    ns["print"] = print;
     ns["and?"] = and_q;
     ns["or?"] = or_q;
 
@@ -100,7 +100,7 @@ Value *divide(size_t argc, Value **args) {
     return new IntegerValue{result};
 }
 
-Value *prn(size_t argc, Value **args) {
+Value *print(size_t argc, Value **args) {
     assert(argc >= 1);
     cout << print_string(args[0], true) << endl;
     return NothingValue::the();
