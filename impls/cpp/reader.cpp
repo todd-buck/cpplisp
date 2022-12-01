@@ -112,39 +112,3 @@ ListValue *read_list(Reader &reader) {
 Value *read_atom(Reader &reader) {
     return new SymbolValue{*reader.next()};
 }
-
-// Value *read_string(Reader &reader) {
-//     auto token = reader.next().value();
-//     if (token.size() < 2)
-//         throw new ExceptionValue { "end of input" };
-//     assert(token.size() >= 2);
-//     if (token.size() == 2)
-//         return new StringValue { "" };
-//     auto str = token.substr(1, token.size() - 2);
-//     string processed = "";
-//     for (size_t i = 0; i < str.size(); ++i) {
-//         auto c = str[i];
-//         switch (c) {
-//         case '"':
-//             processed += '\\';
-//             processed += c;
-//             break;
-//         case '\\': {
-//             if (++i >= str.size())
-//                 throw new ExceptionValue { "unbalanced quotes" };
-//             c = str[i];
-//             switch (c) {
-//             case 'n':
-//                 processed += "\n";
-//                 break;
-//             default:
-//                 processed += c;
-//             }
-//             break;
-//         }
-//         default:
-//             processed += c;
-//         }
-//     }
-//     return new StringValue { processed };
-// }

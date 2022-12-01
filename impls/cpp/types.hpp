@@ -29,7 +29,7 @@ public:
         True,
         False,
         Nil,
-        Nothing // added
+        Nothing
     };
 
     virtual Type type() const = 0;
@@ -41,8 +41,8 @@ public:
     virtual bool is_truthy() const { return true; }
     virtual bool is_list() const { return false; }
     virtual bool is_integer() const { return false; }
-    virtual bool is_exception() const { return false; } // added
-    virtual bool is_nothing() const { return false; } // added
+    virtual bool is_exception() const { return false; } 
+    virtual bool is_nothing() const { return false; } 
 
     virtual bool operator==(const Value *other) const { return this == other; }
     bool operator!=(const Value *other) const { return !(*this == other); }
@@ -56,16 +56,6 @@ public:
     FalseValue *as_false();
     NilValue *as_nil();
     NothingValue *as_nothing(); // added
-
-    // ListValue *as_list() const;
-    // SymbolValue *as_symbol()  const;
-    // IntegerValue *as_integer()  const;
-    // FunctionValue *as_function()  const;
-    // ExceptionValue *as_exception()  const;
-    // TrueValue *as_true()  const;
-    // FalseValue *as_false()  const;
-    // NilValue *as_nil()  const;
-    // NothingValue *as_nothing()  const; // added
 
 };
 
@@ -132,7 +122,6 @@ private:
     string m_str;
 };
 
-// change to NumberValue in implemetation // FIXME
 class IntegerValue : public Value {
 public:
     IntegerValue(long l) : m_long{l} {}

@@ -1,14 +1,9 @@
 #pragma once
 
-// file created to hold the environment definition
-
 #include <unordered_map>
 
 #include "types.hpp"
 
-// define env object that is instantiated with a single
-// "outer" parameter and starts with an empty associative
-// data structure property "data"
 class Env {
 public:
     Env(Env *outer)
@@ -20,9 +15,6 @@ public:
 
         }
 
-    // defining three methods for the env object
-
-    // used to implement set
     // SET: takes a symbol key and a mal value and adds to the data structure
     void set(SymbolValue *key, Value *val) {
         m_data[key] = val;

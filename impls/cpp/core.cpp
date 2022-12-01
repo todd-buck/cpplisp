@@ -8,42 +8,39 @@ using namespace std;
 unordered_map<string, Function> build_namespace() {
     unordered_map<string, Function> ns;
 
+    // arithmetic
     ns["+"] = add;
     ns["-"] = subtract;
     ns["*"] = multiply;
     ns["/"] = divide;
+
+    // verification
     ns["list?"] = list_q;
+    ns["number?"] = number_q;
+    ns["nil?"] = nil_q;
+    ns["symbol?"];                    //implemented in main
+    
+    // logic
+    ns["and?"] = and_q;
+    ns["or?"] = or_q;
     ns["="] = eq;
     ns["<"] = lt;
     ns[">"] = gt;
-
-    // new additions
-    ns["number?"] = number_q;
-    //ns["symbol?"] = symbol_q;
-    ns["nil?"] = nil_q;
+    ns["if"];                        //implemented in main
+    
+    // cons cell functionality
     ns["cons"] = cons;
     ns["car"] = car;
     ns["cdr"] = cdr;
+    ns["cond"];                     //implemented in main
+
+    // variable/function assignment
+    ns["set"];                       //implemented in main
+    ns["define"];                    //implemented in main
+
+    //Expanded functionality (not in project scope)
+    ns["list"] = list;
     ns["print"] = print;
-    ns["and?"] = and_q;
-    ns["or?"] = or_q;
-
-    // to be removed?
-    ns["<="] = lte;
-    ns[">="] = gte;
-    ns["count"] = cnt; // size of a list
-    ns["list"] = list; // list constructor?
-    ns["empty?"] = empty_q; // is this "nil?"
-
-    // for symbol?
-    ns["define"];
-    ns["let*"];
-    ns["do"];
-    ns["if"];
-    ns["fn*"];
-    ns["set"];
-    ns["cond"];
-    ns["symbol?"];
 
     return ns;
 }
@@ -100,26 +97,6 @@ Value *divide(size_t argc, Value **args) {
     return new IntegerValue{result};
 }
 
-Value *print(size_t argc, Value **args) {
-    assert(argc >= 1);
-    cout << print_string(args[0], true) << endl;
-    return NothingValue::the();
-}
-
-// modify to be cons
-Value *list(size_t argc, Value **args) {
-    //assert size == 2
-    //auto cons_cell = new ListValue { }
-    //push 1st arg
-    //push 2nd arg
-    //return cons_cell
-    auto parameter_list = new ListValue { };
-    for(size_t i = 0; i < argc; i++) {
-        parameter_list->push(args[i]);
-    }
-    return parameter_list;
-}
-
 Value *list_q(size_t argc, Value **args) {
     assert(argc >= 1);
     if(args[0]->is_list()) {
@@ -129,18 +106,43 @@ Value *list_q(size_t argc, Value **args) {
     }
 }
 
-Value *empty_q(size_t argc, Value **args) {
+// (number? Expr)
+// Returns T if the expr is numeric, () otherwise
+Value *number_q(size_t argc, Value **args) {
+
+    // TESTED, WORKS
     assert(argc >= 1);
-    if (args[0]->is_list() && args[0]->as_list()->is_empty())
+    if (args[0]->is_integer())
         return TrueValue::the();
-    return FalseValue::the();
+    return NilValue::the();
 }
 
-Value *cnt(size_t argc, Value **args) {
+// (nil? Expr)
+// Return T iff Expr is ()
+Value *nil_q(size_t argc, Value **args) {
     assert(argc >= 1);
-    if (args[0]->is_list())
-        return new IntegerValue { static_cast<long>(args[0]->as_list()->size()) };
-    return new IntegerValue { 0 };
+    if (args[0]->is_nil())
+        return TrueValue::the();
+    return FalseValue::the();
+
+}
+
+// (AND? exp1 exp2)
+// Return nil if either expression is nil
+Value *and_q(size_t argc, Value **args) {
+    assert(argc >= 2);
+    if (args[0]->is_nil() || args[1]->is_nil())
+        return NilValue::the();
+    return TrueValue::the();    
+}
+
+// (OR? exp1 exp2)
+// Return nil if both expressions are nil
+Value *or_q(size_t argc, Value **args) {
+    assert(argc >= 2);
+    if (args[0]->is_nil() && args[1]->is_nil())
+        return NilValue::the();
+    return TrueValue::the();      
 }
 
 Value *eq(size_t argc, Value **args) {
@@ -171,19 +173,6 @@ Value *lt(size_t argc, Value **args) {
     }
 }
 
-Value *lte(size_t argc, Value **args) {
-    assert(argc >= 2);
-    auto a = args[0];
-    auto b = args[1];
-    assert(a->is_integer());
-    assert(b->is_integer());
-    if(a->as_integer()->to_long() <= b->as_integer()->to_long()) {
-        return TrueValue::the();
-    } else {
-        return FalseValue::the();
-    }
-}
-
 Value *gt(size_t argc, Value **args) {
     assert(argc >= 2);
     auto a = args[0];
@@ -195,42 +184,6 @@ Value *gt(size_t argc, Value **args) {
     } else {
         return FalseValue::the();
     }
-}
-
-Value *gte(size_t argc, Value **args) {
-    assert(argc >= 2);
-    auto a = args[0];
-    auto b = args[1];
-    assert(a->is_integer());
-    assert(b->is_integer());
-    if(a->as_integer()->to_long() >= b->as_integer()->to_long()) {
-        return TrueValue::the();
-    } else {
-        return FalseValue::the();
-    }
-}
-
-// NEW THINGS YAY!!!!!
-
-// (number? Expr)
-// Returns T if the expr is numeric, () otherwise
-Value *number_q(size_t argc, Value **args) {
-
-    // TESTED, WORKS
-    assert(argc >= 1);
-    if (args[0]->is_integer())
-        return TrueValue::the();
-    return NilValue::the();
-}
-
-// (nil? Expr)
-// Return T iff Expr is ()
-Value *nil_q(size_t argc, Value **args) {
-    assert(argc >= 1);
-    if (args[0]->is_nil())
-        return TrueValue::the();
-    return FalseValue::the();
-
 }
 
 // (cons expr1 expr2)
@@ -289,24 +242,16 @@ Value *cdr(size_t argc, Value **args) {
     return NilValue::the();
 }
 
-// (AND? exp1 exp2)
-// Return nil if either expression is nil
-// TESTED, CORRECT
-
-// using false and nil synonymously?
-Value *and_q(size_t argc, Value **args) {
-    assert(argc >= 2);
-    if (args[0]->is_nil() || args[1]->is_nil())
-        return NilValue::the();
-    return TrueValue::the();    
+Value *list(size_t argc, Value **args) {
+    auto parameter_list = new ListValue { };
+    for(size_t i = 0; i < argc; i++) {
+        parameter_list->push(args[i]);
+    }
+    return parameter_list;
 }
 
-// (OR? exp1 exp2)
-// Return nil if both expressions are nil
-// TESTED, CORRECT
-Value *or_q(size_t argc, Value **args) {
-    assert(argc >= 2);
-    if (args[0]->is_nil() && args[1]->is_nil())
-        return NilValue::the();
-    return TrueValue::the();      
+Value *print(size_t argc, Value **args) {
+    assert(argc >= 1);
+    cout << print_string(args[0], true) << endl;
+    return NothingValue::the();
 }

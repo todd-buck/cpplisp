@@ -29,16 +29,6 @@ struct Tokenizer {
                         ++m_index;
                         break;
 
-                    //TODO: SHOULD BE REMOVED BASED ON YESSICK'S LISP DOCUMENTATION 
-                    case '~': {
-                        ++m_index;
-                        if(m_index < m_input.length() && m_input.at(m_index) == '@') {
-                            ++m_index;
-                            return view.substr(m_index - 2, 2);
-                        }
-                        return view.substr(m_index - 1, 1);
-                    }
-
                     //single-characters
                     case ']':
                     case '[':
@@ -203,7 +193,6 @@ class Reader {
         size_t m_index { 0 };
 
 };
-
 
 vector<string_view> tokenize(string &input);
 

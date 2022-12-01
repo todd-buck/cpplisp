@@ -1,5 +1,3 @@
-#Cite the source of this (kanaka/mal and seven1m/mal)
-
 # Usage/help
 all help:
 	@echo
