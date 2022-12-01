@@ -33,7 +33,7 @@ public:
     };
 
     virtual Type type() const = 0;
-    virtual string inspect() const = 0;
+    virtual string inspect(bool print_readably = false) const = 0;
     virtual bool is_symbol() const {return false;}
     virtual bool is_nil() const { return false; }
     virtual bool is_false() const { return false; }
@@ -67,7 +67,7 @@ public:
     }
 
     virtual Type type() const override {return Type::List;}
-    virtual string inspect() const override;
+    virtual string inspect(bool print_readably = false) const override;
     virtual bool is_list() const override { return true; }
 
     virtual bool operator==(const Value *) const override;
@@ -106,7 +106,7 @@ public:
 
     virtual Type type() const override {return Type::Symbol;}
     //for printing symbol
-    virtual string inspect() const override {
+    virtual string inspect(bool) const override {
         return str();
     }
 
@@ -131,7 +131,7 @@ public:
 
     virtual bool is_integer() const override { return true; }
 
-    virtual string inspect() const override {
+    virtual string inspect(bool) const override {
         return to_string(m_long);
     }
 
@@ -152,7 +152,7 @@ public:
 
     virtual Type type() const override { return Type::Function; }
 
-    virtual string inspect() const override {
+    virtual string inspect(bool) const override {
         return "#<function>";
     }
 
@@ -167,7 +167,7 @@ public:
 
     virtual Type type() const override {return Type::Exception;}
 
-    virtual string inspect() const override {
+    virtual string inspect(bool) const override {
         return "<exception" + m_message + ">";
     }
 
@@ -186,7 +186,7 @@ public:
     }
     virtual Type type() const override {return Type::True;}
 
-    virtual string inspect() const override {
+    virtual string inspect(bool) const override {
         return "true";
     }
 private:
@@ -205,7 +205,7 @@ public:
 
     virtual Type type() const override {return Type::False;}
 
-    virtual string inspect() const override {
+    virtual string inspect(bool) const override {
         return "false";
     }
 
@@ -226,7 +226,7 @@ public:
 
     virtual Type type() const override {return Type::Nil;}
 
-    virtual string inspect() const override {
+    virtual string inspect(bool) const override {
         return "nil";
     }
 
@@ -248,7 +248,7 @@ public:
     }
     virtual Type type() const override {return Type::Nothing;}
 
-    virtual string inspect() const override {
+    virtual string inspect(bool) const override {
         return "";
     }
 private:

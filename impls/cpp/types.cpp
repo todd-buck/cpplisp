@@ -48,11 +48,11 @@ NothingValue *Value::as_nothing() {
 }
 
 //builds string out of list (for printing)
-string ListValue::inspect() const {
+string ListValue::inspect(bool print_readably) const {
     string out = "(";
 
     for (auto *value: m_list) {
-        out.append(value->inspect());
+        out.append(value->inspect(print_readably));
         out.append(" ");
     }
 

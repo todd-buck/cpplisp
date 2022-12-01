@@ -4,4 +4,4 @@
 
 using namespace std;
 
-string print_string(Value *value);
+string print_string(Value *value, bool print_readably = false);
