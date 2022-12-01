@@ -173,20 +173,30 @@ SUPERBIGLIST
 ;; Create a cons cell with expr1 as car and expr2 and cdr: ie: (exp1 . expr2)
 ;; ------------------------------------------------------------------------------
 
+(cons 1 2)
+;=>(1 2)
+(cons (cons 1 2) (cons 3 4))
+;=>(1 2 3 4)
+(cons 1 (cons 2 (cons 3 4)))
+;=>(1 2 3 4)
+(cons (list 1 2 3 4) (list 5 6 7 8))
+;=>(1 2 3 4 5 6 7 8)
+(cons (list 1 2) (cons 3 4))
+;=>(1 2 3 4)
+(cons 1 (list 2 3 4))
+;=>(1 2 3 4)
+(cons 1 nil)
+;=>(1 nil)
+(cons (list 1 2 3) nil)
+;=>(1 2 3 nil)
 
 ;; ------------------------------------------------------------------------------
-;; TESTING CAR
+;; TESTING CAR/CDR
 ;; (car expr)
 ;; Expr should be a non empty list. Car returns the car cell of the first cons cell
-;; ------------------------------------------------------------------------------
-
-
-;; ------------------------------------------------------------------------------
-;; TESTING CDR
 ;; (cdr expr)
 ;; Expr should be a non empty list. Cdr returns the cdr cell of the first cons cell
 ;; ------------------------------------------------------------------------------
-
 
 ;; ------------------------------------------------------------------------------
 ;; TESTING NUMBER?

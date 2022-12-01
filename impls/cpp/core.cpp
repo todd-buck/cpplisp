@@ -102,7 +102,7 @@ Value *divide(size_t argc, Value **args) {
 
 Value *prn(size_t argc, Value **args) {
     assert(argc >= 1);
-    cout << print_string(args[0]) << endl;
+    cout << print_string(args[0], true) << endl;
     return NothingValue::the();
 }
 
@@ -244,11 +244,19 @@ Value *cons(size_t argc, Value **args) {
             cons_cell->push(args[0]->as_list()->at(i));
         }
     }
-    else if (args[0]->is_integer()) {
+    else {
         cons_cell->push(args[0]);
     }
 
-    cons_cell->push(args[1]);
+    if (args[1]->is_list()) {
+        for (size_t i = 0; i < args[1]->as_list()->size(); i++) {
+            cons_cell->push(args[1]->as_list()->at(i));
+        }
+    }
+    else {
+        cons_cell->push(args[1]);
+    }
+
     return cons_cell;
 }
 
