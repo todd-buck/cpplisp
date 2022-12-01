@@ -1,9 +1,1 @@
-Instructions:
-
-1. Open a terminal at the root directory
-
-2. Useful commands (See /cpplip/makefile or run make in root terminal for usage guide)
-
-    - make "test^cpp^step0" : creates and runs test suite for step 0 in terminal
-    - make "repl^cpp^step0" : creates and runs repl environment for step 0 in terminal
-    - make "clean^cpp" : cleans the impls/cpp file of any executables/binaries
+Write a proper README

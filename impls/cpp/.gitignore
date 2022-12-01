@@ -1,26 +1,16 @@
 .DS_Store
-.bash_history
-.cache
-.cargo
-.config
-.mal-history
-.mal_history
-.crystal
-.lein
-.m2
-.ivy2
-.sbt
-.npm
-.node-gyp
-package-lock.json
-*/experiments
-node_modules
-*/notes
+#ignore all files
+*
 
-logs
-old
-tmp/
-*.exe
+#unignore all directories
+!*/
 
-#DO THIS
-history.txt
+#unignore all .cpp files
+!*.cpp
+
+#unignore all .hpp files
+!*.hpp
+
+#explicitly unignore run file (should be .sh extension but
+#not showing in file explorer
+!run
