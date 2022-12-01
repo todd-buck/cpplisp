@@ -264,9 +264,14 @@ Value *cons(size_t argc, Value **args) {
 // Expr should be a non empty list. Car returns the car cell of the first cons cell
 Value *car(size_t argc, Value **args) {
     assert(argc >= 1);
+    
     if (args[0]->is_list() && !args[0]->as_list()->is_empty()) {
         return args[0]->as_list()->at(0);
     }
+    else if (args[0]->is_integer()) {
+        return args[0]->as_integer();
+    }
+
     return NilValue::the();
 }
 
