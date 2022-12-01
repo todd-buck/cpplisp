@@ -16,12 +16,7 @@ public:
 
     Env(Env *outer, ListValue *binds, ListValue *exprs)
         : m_outer(outer) { 
-            assert(binds->size() == exprs->size());
-            for(size_t i = 0; i < binds->size(); i++) {
-                auto key = binds->at(i)->as_symbol();
-                auto val = exprs->at(i);
-                set(key, val);
-            }
+            set_binds(binds, exprs);
 
         }
 
@@ -56,6 +51,31 @@ public:
     }
 
 private:
+    void set_binds(ListValue *binds, ListValue *exprs) {
+        for (size_t i = 0; i < binds->size(); ++i) {
+            auto key = binds->at(i)->as_symbol();
+            if (key->matches("&")) {
+                if (i + 1 >= binds->size())
+                    throw new ExceptionValue { "missing symbol after &" };
+                key = binds->at(i + 1)->as_symbol();
+                set_binds_rest(key, exprs, i);
+                return;
+            }
+            if (i >= exprs->size())
+                throw new ExceptionValue { "not enough arguments" };
+            auto val = exprs->at(i);
+            set(key, val);
+        }
+    }
+
+    void set_binds_rest(SymbolValue *key, ListValue *exprs, size_t starting_index) {
+        auto vals = new ListValue;
+        for (size_t i = starting_index; i < exprs->size(); ++i) {
+            vals->push(exprs->at(i));
+        }
+        set(key, vals);
+    }
+
     Env *m_outer { nullptr };
     unordered_map<const SymbolValue *, Value *, EnvHash, EnvComparator> m_data;
 };

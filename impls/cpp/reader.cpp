@@ -48,6 +48,7 @@ Value *read_form(Reader &reader) {
         case '9':
             return read_integer(reader);
         default:
+        assert(token.size() >= 1);
         if(token == "true") {
             reader.next();
             return TrueValue::the();
@@ -57,6 +58,11 @@ Value *read_form(Reader &reader) {
         } else if(token == "nil") {
             reader.next();
             return NilValue::the();
+        } else if (token[0] == '"') {
+            return read_string(reader);
+        } else if (token[0] == ':') {
+            reader.next();
+            return new KeywordValue { token };
         }
             return read_atom(reader);
     }
@@ -84,7 +90,7 @@ Value *read_integer(Reader &reader) {
     return new IntegerValue{number};
 }
 
-Value *read_list(Reader &reader) {
+ListValue *read_list(Reader &reader) {
     //consume '('
     reader.next();
 
@@ -93,14 +99,51 @@ Value *read_list(Reader &reader) {
     while (auto token = reader.peek()) {
         if (*token == ")") {
             reader.next();
-            break;
+            return list;
         }
         list->push(read_form(reader));
     }
 
+    cerr << "EOF\n";
     return list;
 }
 
 Value *read_atom(Reader &reader) {
     return new SymbolValue{*reader.next()};
+}
+
+Value *read_string(Reader &reader) {
+    auto token = reader.next().value();
+    if (token.size() < 2)
+        throw new ExceptionValue { "end of input" };
+    assert(token.size() >= 2);
+    if (token.size() == 2)
+        return new StringValue { "" };
+    auto str = token.substr(1, token.size() - 2);
+    string processed = "";
+    for (size_t i = 0; i < str.size(); ++i) {
+        auto c = str[i];
+        switch (c) {
+        case '"':
+            processed += '\\';
+            processed += c;
+            break;
+        case '\\': {
+            if (++i >= str.size())
+                throw new ExceptionValue { "unbalanced quotes" };
+            c = str[i];
+            switch (c) {
+            case 'n':
+                processed += "\n";
+                break;
+            default:
+                processed += c;
+            }
+            break;
+        }
+        default:
+            processed += c;
+        }
+    }
+    return new StringValue { processed };
 }

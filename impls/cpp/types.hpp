@@ -41,9 +41,11 @@ public:
     virtual bool is_truthy() const { return true; }
     virtual bool is_list() const { return false; }
     virtual bool is_integer() const { return false; }
+    virtual bool is_exception() const { return false; } // added
     virtual bool is_nothing() const { return false; } // added
 
-    virtual bool operator==(const Value *) const { return false; }
+    virtual bool operator==(const Value *other) const { return this == other; }
+    bool operator!=(const Value *other) const { return !(*this == other); }
 
     ListValue *as_list();
     SymbolValue *as_symbol();
@@ -54,6 +56,16 @@ public:
     FalseValue *as_false();
     NilValue *as_nil();
     NothingValue *as_nothing(); // added
+
+    ListValue *as_list() const;
+    SymbolValue *as_symbol()  const;
+    IntegerValue *as_integer()  const;
+    FunctionValue *as_function()  const;
+    ExceptionValue *as_exception()  const;
+    TrueValue *as_true()  const;
+    FalseValue *as_false()  const;
+    NilValue *as_nil()  const;
+    NothingValue *as_nothing()  const; // added
 
 };
 
@@ -110,6 +122,10 @@ public:
         return str();
     }
 
+    bool operator==(const Value *other) const override {
+        return other->is_symbol() && const_cast<Value *>(other)->as_symbol()->m_str == m_str;    
+    }
+
     virtual bool is_symbol() const override {return true;}
 
 private:
@@ -120,7 +136,15 @@ private:
 class IntegerValue : public Value {
 public:
     IntegerValue(long l) : m_long{l} {}
+    
+    virtual Type type() const override {return Type::Integer;}
+    
+    virtual string inspect(bool) const override {
+        return to_string(m_long);
+    }
 
+    virtual bool is_integer() const override { return true; }
+    
     bool operator==(const Value *other) const override { 
         return other-> is_integer() && const_cast<Value *>(other)->as_integer()->m_long == m_long;
     }
@@ -139,9 +163,6 @@ private:
     long m_long{0};
 };
 
-//possibly deprecated, check usage
-//using FunctionPtr = Value *(*)(size_t, Value **);
-
 using Function = function<Value *(size_t, Value **)>;
 
 class FunctionValue : public Value {
@@ -149,6 +170,10 @@ public:
     FunctionValue(Function function) : m_function{function} {}
 
     Function to_function() { return m_function; }
+
+    bool operator==(const Value *other) const override {
+        return other == this;
+    }
 
     virtual Type type() const override { return Type::Function; }
 
@@ -164,11 +189,16 @@ class ExceptionValue : public Value {
 public:
     ExceptionValue(string message) : m_message{message} {}
 
-
     virtual Type type() const override {return Type::Exception;}
 
     virtual string inspect(bool) const override {
         return "<exception" + m_message + ">";
+    }
+
+    virtual bool is_exception() const override { return true; }
+
+    bool operator==(const Value *other) const override {
+        return other->is_exception() && const_cast<Value *>(other)->as_exception()->m_message == m_message;
     }
 
     const string &message() {return m_message;}
@@ -184,11 +214,15 @@ public:
             s_instance = new TrueValue;
         return s_instance;
     }
+
     virtual Type type() const override {return Type::True;}
 
     virtual string inspect(bool) const override {
         return "true";
     }
+
+    virtual bool is_true() const override { return true; }
+
 private:
     TrueValue() { }
 
@@ -209,7 +243,9 @@ public:
         return "false";
     }
 
+    virtual bool is_false() const override { return true; }
     virtual bool is_truthy() const override { return false; }
+
 private:
     FalseValue() { }
 

@@ -207,12 +207,10 @@ class Reader {
 
 vector<string_view> tokenize(string &input);
 
-Value *read_str(string &input);
-
 Value *read_form(Reader &reader);
-
+Value *read_str(string &input);
 Value *read_integer(Reader &reader);
-
-Value *read_list(Reader &reader);
-
+Value *read_string(Reader &reader);
+ListValue *read_list(Reader &reader);
 Value *read_atom(Reader &reader);
+

@@ -23,8 +23,9 @@ Value *EVAL(Value *ast, Env &env) {
         return ast;
     } else {
         auto list = ast->as_list();
-        auto first= list->at(0); 
+        auto first = list->at(0); 
         if(first->is_symbol()) {
+<<<<<<< HEAD:archive/step4_if_fn_do.cpp
             auto special = first->as_symbol();
             if (special->matches("define")) { // keep
                 auto key = list->at(1)->as_symbol();                
@@ -40,6 +41,13 @@ Value *EVAL(Value *ast, Env &env) {
                     return EVAL(body, *function_env);
                 };
                 auto val = new FunctionValue { closure };
+=======
+            auto special = first->as_symbol(); 
+            if (special->matches("def!")) {
+                // symbol "def!": call the set method of the current environment (second parameter of EVAL called env) using the unevaluated first parameter (second list element) as the symbol key and the evaluated second parameter as the value.
+                auto key = list->at(1)->as_symbol();
+                auto val = EVAL(list->at(2), env);
+>>>>>>> main:impls/cpp/step4_if_fn_do.cpp
                 env.set(key, val);
                 return NothingValue::the();
             }
@@ -49,7 +57,12 @@ Value *EVAL(Value *ast, Env &env) {
                 auto bindings = list->at(1)->as_list();
                 for (size_t i = 0; i < bindings->size(); i+= 2) {
                     auto key = bindings->at(i)->as_symbol();
+                    
+
+                    //TODO: Evaluate accuracy, not matching repo
                     assert(i+1 < bindings->size()); // CORRECTION FROM VIDEO AROUND 26:37
+
+
                     auto val = EVAL(bindings->at(i+1), *new_env);
                     new_env->set(key, val);
                 }
@@ -57,11 +70,15 @@ Value *EVAL(Value *ast, Env &env) {
             } else if(special->matches("do")) { // remove
                 Value *result = nullptr;
                 assert(list->size() > 1);
-                for(size_t i = 0; i < list->size(); i++) {
-                    result = eval_ast(list->at(i), env);
-                    return result;
+                for(size_t i = 1; i < list->size(); ++i) {
+                    result = EVAL(list->at(i), env);
                 }
+<<<<<<< HEAD:archive/step4_if_fn_do.cpp
             } else if(special->matches("if")) { // keep
+=======
+                return result;
+            } else if(special->matches("if")) {
+>>>>>>> main:impls/cpp/step4_if_fn_do.cpp
                 auto condition = list->at(1);
                 auto true_expr = list->at(2);
                 auto false_expr = list->size() >= 4 ? list->at(3) : NilValue::the();
@@ -180,7 +197,7 @@ Value *eval_ast(Value *ast, Env &env) {
 }
 
 string PRINT(Value *input) {
-    return print_string(input);
+    return print_string(input, true);
 }
 
 string rep(string input, Env &env) {
