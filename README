@@ -1,1 +1,57 @@
-Write a proper README
+
+██╗░░░░░██╗░██████╗██████╗░
+██║░░░░░██║██╔════╝██╔══██╗
+██║░░░░░██║╚█████╗░██████╔╝
+██║░░░░░██║░╚═══██╗██╔═══╝░
+███████╗██║██████╔╝██║░░░░░
+╚══════╝╚═╝╚═════╝░╚═╝░░░░░
+
+██╗███╗░░██╗████████╗███████╗██████╗░██████╗░██████╗░███████╗████████╗███████╗██████╗░
+██║████╗░██║╚══██╔══╝██╔════╝██╔══██╗██╔══██╗██╔══██╗██╔════╝╚══██╔══╝██╔════╝██╔══██╗
+██║██╔██╗██║░░░██║░░░█████╗░░██████╔╝██████╔╝██████╔╝█████╗░░░░░██║░░░█████╗░░██████╔╝
+██║██║╚████║░░░██║░░░██╔══╝░░██╔══██╗██╔═══╝░██╔══██╗██╔══╝░░░░░██║░░░██╔══╝░░██╔══██╗
+██║██║░╚███║░░░██║░░░███████╗██║░░██║██║░░░░░██║░░██║███████╗░░░██║░░░███████╗██║░░██║
+╚═╝╚═╝░░╚══╝░░░╚═╝░░░╚══════╝╚═╝░░╚═╝╚═╝░░░░░╚═╝░░╚═╝╚══════╝░░░╚═╝░░░╚══════╝╚═╝░░╚═╝
+
+By Caroline Lewis, Todd Buck, and Mithul Nallaka
+
+-----------|
+OBJECTIVE: |
+-----------|
+
+Implement a Lisp, a small programming language in C++ with the following commands/built-in names:
+
+            arithmetic: +, -, *, /
+          verification: list?, number?, nil?, symbol?
+                 logic: and?, or?, =, <, >, if, cond
+                 lists: cons, car, cdr
+   variables/functions: set, define
+extended functionality: list, eval
+
+
+
+-------------|
+HOW TO RUN:  |
+-------------|
+
+Open a terminal, and type in any of the following, and press enter.
+
+make cpp     -->      builds cpplisp.
+
+make test    -->      builds cpplisp and runs testing suite. all 111 tests will pass.
+                      the tests can be found in impls/tests/tests_master.txt and the
+                      results of the tests can be found in impls/tests/tests_log.txt.
+
+make repl    -->      builds cpplisp and runs in repl environment. you may type in
+                      parenthesis-bound expressions, press enter, and the result 
+                      will be returned back. For example, user> (+ 1 2) will print 3.
+
+make clean   -->      removes main executable from project directory. do this after
+                      running the repl and testing suite.
+
+------------------|
+HOW WE BUILT IT:  |
+------------------|
+
+Some credit must be given to 
+
