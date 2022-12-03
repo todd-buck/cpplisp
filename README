@@ -55,10 +55,8 @@ make clean   -->      removes main executable from project directory. do this af
 HOW WE BUILT IT:  |
 ------------------|
 
-We based the structure of our interpreter off of a pre-existing repository that contained a c++ implementation of a Lisp interpreter. We chose this as our base because it already had the testing suite and repl environment set up, two features that proved to be extremely useful as we heavily added and changed code functionality.
+We based the base structure of our interpreter off of a pre-existing repository (Joel Martin's MAL Project) that contained a c++ implementation of a Lisp interpreter. We then built the base structure of this interpreter by following a YouTube tutorial (Tim Morgan's Online C++ Guide). We chose this as our base because it already had the testing suite and repl environment set up, two features that proved to be extremely useful as we heavily added and changed code functionality. If you'd like to view our creative process, you may also view our GitHub repository below.
 
-Base: https://github.com/kanaka/mal/tree/master/impls/cpp
-
-If you'd like to view our creative process, you may view our GitHub repository below.
-
-Our Project: https://github.com/todd-buck/cpplisp
+    Joel Martin's MAL Project: https://github.com/kanaka/mal/tree/master/impls/cpp
+Tim Morgan's Online C++ Guide: https://tinyurl.com/2p8svp87
+                  Our Project: https://github.com/todd-buck/cpplisp
