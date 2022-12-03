@@ -28,7 +28,9 @@ Implement a Lisp, a small programming language in C++ with the following command
    variables/functions: set, define
 extended functionality: list, eval
 
+Note: The list command creates a flat list. Ex: (list 1 2 3 4 5 6 7) will return (1 2 3 4 5 6 7). This allowed us to create lists quickly in testing to avoid typing time-consuming nested cons statements.
 
+Note: The eval function is implemented within main.cpp on line 19. It takes in a list of nested expressions and an environment as parameters and returns the fully evaluated result.
 
 -------------|
 HOW TO RUN:  |
@@ -53,5 +55,6 @@ make clean   -->      removes main executable from project directory. do this af
 HOW WE BUILT IT:  |
 ------------------|
 
-Some credit must be given to 
+We based the structure of our interpreter off of a pre-existing repository that contained a s++ implementation of a Lisp interpreter. We chose this as our base because it already had the testing suite and repl environment set up, two features that proved to be extremely useful as we heavily added and changed code functionality.
 
+You can find it here: https://github.com/kanaka/mal/tree/master/impls/cpp
